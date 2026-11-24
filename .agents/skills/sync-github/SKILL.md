@@ -14,6 +14,7 @@ NEVER stage, commit, or push files inside:
 - `plans/`
 - `logs/`
 - `council/`
+- `projects/`
 - `.scratch/`
 - `.env` or credential/key files
 

@@ -16,7 +16,8 @@ lifeplanner/
 ├── profile/                  # [Local only] Personal domain profiles & schedule constraints
 ├── plans/YYYY/               # [Local only] yearly, quarterly, monthly, weekly, daily plans
 ├── logs/                     # [Local only] Daily check-ins & periodic reflections
-└── council/                  # [Local only] Council opinions & conflict mediation records
+├── council/                  # [Local only] Council opinions & conflict mediation records
+└── projects/                 # [Local only] Per-project workspaces (projects/<slug>/index.md)
 ```
 
 ## Quick Start

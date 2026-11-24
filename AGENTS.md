@@ -60,6 +60,6 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 
 ## 4. Privacy & GitHub Sync Guardrail
 
-- Personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `.scratch/`) are excluded in `.gitignore` and MUST NEVER be staged, committed, or pushed to a remote repository unless the user explicitly overrides this policy on a verified private repo.
+- Personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `projects/`, `.scratch/`) are excluded in `.gitignore` and MUST NEVER be staged, committed, or pushed to a remote repository unless the user explicitly overrides this policy on a verified private repo.
 - Only system files (`.agents/`, `AGENTS.md`, `README.md`, `templates/`, `integrations/`, `.gitignore`, and future `dashboard/`) are eligible for `/sync-github`.
 - **Auto-Backup Policy (User-Authorized)**: Whenever system files are created or updated, automatically run the privacy audit (`git status`, verify `.gitignore`, check `git diff --cached --name-only` has zero personal paths) and commit + `git push` to `origin` without extra confirmation. If ANY forbidden personal path appears, STOP immediately and warn the user.
