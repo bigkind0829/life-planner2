@@ -33,8 +33,8 @@ Run `git status --short` and `git remote -v`:
 2. Inspect `git status --short` and verify ONLY allowed system paths are modified/untracked (`.agents/`, `AGENTS.md`, `README.md`, `.gitignore`, `templates/`, `integrations/`, and future `dashboard/`).
 3. Present the exact list of files to commit and a concise proposed commit message.
 
-### 3. Confirm & Push
+### 3. Auto-Commit & Push (System Files Only)
 
-1. **Always obtain explicit user confirmation** before executing `git push` (unless the user explicitly instructed committing and pushing these exact changes in the current turn).
-2. Stage only verified system files (`git add .gitignore AGENTS.md README.md .agents/ templates/ integrations/`), double-check `git diff --cached --name-only` contains zero forbidden paths, commit with a clear message, and run `git push`.
+1. **User-Authorized Auto-Backup**: Because the user has enabled automatic system backups, proceed directly to stage, commit, and push whenever ONLY allowed system files are changed and the privacy audit passes cleanly. *(If any forbidden path appears, or if the change is destructive/force-push, STOP and ask the user.)*
+2. Stage only verified system files (`git add .gitignore AGENTS.md README.md .agents/ templates/ integrations/` plus `dashboard/` if present), double-check `git diff --cached --name-only` contains zero forbidden paths, commit with a clear message, and run `git push`.
 3. Report the pushed commit hash, branch, and file count.

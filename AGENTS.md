@@ -30,6 +30,10 @@ Each of the 6 domain agents acts as a **domain lead**. Later, any domain may add
   - **Does NOT summon the 6 domain subagents** so weekly/daily adjustments remain fast and lightweight.
   - Daily plans always enforce **Top 3 MITs + key time blocks + ~20% buffer**.
 
+### System Meta-Agent (On-Demand Only)
+- `system-architect` (`.agents/agents/system-architect.md`) operates **outside** the 6-domain life council.
+- Invoked **only** via `/system-audit` (never during routine life planning) to audit token waste, workflow friction, schema/privacy integrity, and propose prioritized system upgrades.
+
 ## 2. Routing Rules
 
 | User Intent | Workflow to Run |
@@ -39,6 +43,7 @@ Each of the 6 domain agents acts as a **domain lead**. Later, any domain may add
 | Weekly review or next week's time-blocked plan | `/weekly-plan` |
 | Morning briefing, evening 3-min check-in, mid-day reschedule | `/daily-plan` |
 | Chronic slippage, floor breach, or upstream goal revision | `/rebalance` |
+| Audit token waste, workflow friction, or propose/apply system upgrades | `/system-audit` |
 | Commit and push system updates to GitHub safely | `/sync-github` |
 
 ## 3. Core Behavioral Rules
@@ -60,4 +65,4 @@ Each of the 6 domain agents acts as a **domain lead**. Later, any domain may add
 
 - Personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `.scratch/`) are excluded in `.gitignore` and MUST NEVER be staged, committed, or pushed to a remote repository unless the user explicitly overrides this policy on a verified private repo.
 - Only system files (`.agents/`, `AGENTS.md`, `README.md`, `templates/`, `integrations/`, `.gitignore`, and future `dashboard/`) are eligible for `/sync-github`.
-- Always verify staged files and obtain explicit confirmation before running `git push`.
+- **Auto-Backup Policy (User-Authorized)**: Whenever system files are created or updated, automatically run the privacy audit (`git status`, verify `.gitignore`, check `git diff --cached --name-only` has zero personal paths) and commit + `git push` to `origin` without extra confirmation. If ANY forbidden personal path appears, STOP immediately and warn the user.

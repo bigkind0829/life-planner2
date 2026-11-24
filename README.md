@@ -9,8 +9,8 @@ lifeplanner/
 ├── AGENTS.md                 # Workspace operating charter & routing rules
 ├── .gitignore                # Protects personal data directories from Git leaks
 ├── .agents/
-│   ├── agents/               # 6 MECE domain council custom subagents (+ future child specialists)
-│   └── skills/               # 6 planner & sync workflow skills
+│   ├── agents/               # 6 MECE domain council + on-demand system-architect
+│   └── skills/               # 7 planner, system-audit & sync workflow skills
 ├── templates/                # Standard YAML+Markdown templates (version-controlled)
 ├── integrations/             # Reserved adapter boundary for Phase 2 external tools
 ├── profile/                  # [Local only] Personal domain profiles & schedule constraints
@@ -27,4 +27,5 @@ lifeplanner/
    - `/weekly-plan` once a week for time-blocked weekly allocation.
    - `/daily-plan` for 1-min morning MITs, 3-min evening check-ins, or instant mid-day rescheduling.
 4. **Rebalance on Thresholds**: Run `/rebalance` when goals slip 2 weeks in a row, a health/finance/relationship floor is breached, or priorities shift.
-5. **Push System Updates**: Run `/sync-github` to safely commit and push system changes (`.agents/`, `AGENTS.md`, `templates/`) while guaranteeing personal data stays local.
+5. **Audit & Upgrade System**: Run `/system-audit` anytime to inspect token waste, workflow friction, schema/privacy integrity, and prioritized upgrade ideas.
+6. **Push System Updates**: Run `/sync-github` to safely commit and push system changes (`.agents/`, `AGENTS.md`, `templates/`) while guaranteeing personal data stays local.
