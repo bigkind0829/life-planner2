@@ -38,14 +38,14 @@ Pass each subagent the target planning horizon (e.g., `2026`, `2026-Q4`, `2026-1
 
 Wait until all 6 subagents report back.
 
-### 3. Mediate Conflicts & Present Scenarios
+### 3. Mediate Conflicts & Present 4-Part Executive Approval Sheet (결재서)
 
-1. Synthesize the 6 domain reports and list explicit cross-domain conflicts (e.g., `mastery` or `wealth` hours exceeding remaining capacity or violating `vitality` / `connection-joy` floors).
-2. Apply `north-star` charter rules to draft a **1st-pass mediated recommendation**.
-3. If major unresolved trade-offs remain, present **2–3 concrete scenarios** (e.g., **Option A: Recommended Balanced**, **Option B: Focused Sprint**, **Option C: Recovery/Consolidation**) showing what each gains and sacrifices, and wait for the user to choose or tweak.
-4. **Proactive Next Quest & New Product Pitch (Holding-Company Tier)**: At the end of Monthly, Quarterly, and Yearly reviews (except during `exam` mode, where major launches pause), synthesize `world-radar`, `mastery`, and `wealth` signals into a **3-Option Portfolio Card** (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) for life-level new quests, revenue streams, or portfolio shifts.
-   - Each card MUST include 5 fixed fields: `핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과(수익/성장/유튜브 소재력)`, `트레이드오프`.
-   - Enforce **Strict 1-In, 1-Out**: if adopting an option pushes `active` projects past 2 or exceeds capacity, explicitly specify which existing project finishes, scales down, or moves to `queued`.
+Synthesize the 6 domain reports, apply `north-star` charter rules to mediate cross-domain conflicts, and present a clean **4-Part Approval Sheet** for user sign-off:
+
+1. **지난 실적 (Results)**: Concise summary of outcomes across domains and active subsidiaries for the prior period.
+2. **우선순위 조정 (Priority Stack)**: Propose the period's ordered **Priority Stack** (`P0`: survival floors, fixed obligations, 20% buffer → `P1, P2, ..., PN`: all domains & subsidiaries ranked explicitly — no hardcoded subsidiary count cap). If major strategic trade-offs remain, offer 2–3 concrete ranking scenarios.
+3. **다음 계획 & 신상품 제안 (Next Plan & Proactive 3-Option Pitch)**: At Monthly, Quarterly, and Yearly reviews (except during `exam` mode, where major launches pause), synthesize `world-radar`, `mastery`, and `wealth` signals into a **3-Option Portfolio Card** (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) with 5 fixed fields (`핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과(수익/성장/유튜브 소재력)`, `트레이드오프`).
+4. **시간·돈 결재 (Zero-Sum Hard 100% Budget Cap)**: Allocate weekly hours (`weekly_quota_hours`) and monetary budget strictly top-down from `P0 → P1 → ... → PN`. **Hard Rule: Total allocated time and money MUST NOT exceed 100% of available capacity.** The moment remaining capacity reaches 0, lower-priority items automatically scale down or defer to `0h` (`queued`) — never finalize an overbooked sheet; if the user wants to fund a lower item, explicitly confirm which higher/peer item yields hours or budget.
    - When the user approves a new quest/product, offer to log it as a content candidate in `projects/youtube/index.md` (`## Ideas & Backlog`) if relevant, and park unchosen good ideas in the relevant project's backlog.
 
 ### 4. Write Linked Plans & Archive Council Record

@@ -31,7 +31,7 @@ Audit across 4 focused dimensions:
    - Verify `.gitignore` protects all personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `.scratch/`, `.env`).
 
 4. **High-Leverage Upgrade Proposals**
-   - Suggest concrete, practical upgrades tailored to this workspace (Quick Wins vs. Next-Phase capabilities such as local dashboard, external integrations, child sub-specialists, or automation).
+   - Suggest concrete, practical upgrades tailored to this workspace (Quick Wins vs. Next-Phase capabilities such as local dashboard, external integrations, specialized child sub-agents like study/exercise/sleep only when real friction justifies splitting, or automation).
    - Rank every proposal by **Impact vs. Effort** and explicitly note any token cost it would add.
 
 ## Guardrails

@@ -23,9 +23,9 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
   - Uses `north-star` charter rules for 1st-pass conflict mediation; presents only core unresolved trade-offs as 2–3 concrete scenarios for user choice.
   - Archives council opinions and final decisions in `council/`.
 - **Tactical Planner (`/weekly-plan`, `/daily-plan`) — Weekly / Daily**:
-  - Reads only the active Monthly plan, `profile/schedule-constraints.md`, `profile/vitality.md` floor, and recent logs.
-  - **Does NOT summon the 6 domain subagents** so weekly/daily adjustments remain fast and lightweight.
-  - Daily plans always enforce **Top 3 MITs + key time blocks + ~20% buffer**.
+  - Reads only the active Monthly/Weekly plan, requirement files (`profile/`, funded `projects/*/index.md`), and recent logs.
+  - **Does NOT summon the 6 domain subagents or subsidiary agents** so weekly/daily adjustments remain fast and lightweight.
+  - Daily plans build a **concrete time-blocked timetable + ~20% buffer** in priority order (`P0 → P1 → ... → PN`) with a **variable task count** (bounded strictly by physical time capacity, not an artificial 3-task limit).
 
 ### System Meta-Agent (On-Demand Only)
 - `system-architect` (`.agents/agents/system-architect.md`) operates **outside** the 6-domain life council.
@@ -50,7 +50,7 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 
 ## 3. Core Behavioral Rules
 
-1. **Constrained Top-Down**: Never schedule goals before deducting fixed obligations, sleep/health floors, and ~20% daily buffer.
+1. **Priority-Driven Zero-Sum Allocation (Hard 100% Cap)**: Pull time/budget requirements from domain & subsidiary files (`profile/`, `projects/*/index.md` — no hardcoded domain logic so child sub-agents plug in cleanly later). Lock **P0** (survival floor + fixed obligations + ~20% buffer) first, then fill **P1 → P2 → ... → PN** strictly in priority order. **NEVER approve a plan exceeding 100% of available time or money**; once capacity hits 100%, lower-priority items automatically scale down or defer to `0h` unless a higher/peer item explicitly yields quota.
 2. **Threshold-Based Escalation**: Absorb normal daily/weekly noise inside `/daily-plan` and `/weekly-plan`. Escalate to `/rebalance` ONLY when:
    - Core weekly targets miss for **2 consecutive weeks**, OR
    - A domain floor (`vitality`, `wealth`, `connection-joy`) is breached (`floors_ok: false`), OR
@@ -62,10 +62,11 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
    - `Conflicts & Risks` (tensions with other domains or capacity)
    - `Indicators` (1–2 measurable metrics)
 5. **Phase 2 Schema Integrity**: Every file in `plans/YYYY/` MUST start with valid YAML frontmatter matching `templates/plans/` (`id`, `period`, `parent_id`, `status`, `start_date`, `end_date`, `progress`, `domains`, `floors_ok`, `updated_at`). Use ASCII/ISO filenames (`YYYY-MM-DD`, `YYYY-Www`, `YYYY-MM`, `YYYY-Q#`) for OneDrive/Windows safety.
-6. **Proactive Quest & Product Pitch Loop**:
-   - **2-Tier Ownership**: Holding Company (`/strategy-review` — Monthly/Quarterly/Yearly) pitches life-level new quests, revenue streams, or portfolio shifts; Subsidiaries (`/project-manage` & `project-*` on milestone/quest completion) pitch next quests or new products/features inside their own scope.
+6. **4-Part Executive Approval & Proactive Pitch Loop**:
+   - **4-Part Review Format**: Monthly, Quarterly, and Yearly `/strategy-review` sessions produce a clean 4-part approval sheet: **(1) 지난 실적**, **(2) 우선순위 조정 (`P0` + `P1~PN` 순위표)**, **(3) 다음 계획 & 신상품 3안 제안**, **(4) 시간·돈 결재 (`≤ 100%` Zero-Sum Hard Cap)**.
+   - **2-Tier Ownership**: Holding Company (`/strategy-review`) pitches life-level new quests, revenue streams, or priority shifts; Subsidiaries (`/project-manage` & `project-*` on milestone/quest completion) pitch next quests or new products/features inside their own scope.
    - **3-Option Portfolio Card**: Every proactive pitch offers exactly 3 options (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) with 5 fixed fields (`핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과(수익/성장/유튜브 소재력)`, `트레이드오프`).
-   - **Strict 1-In, 1-Out & Floor Guardrail**: Existing `active` subsidiaries replace quests inside their existing `weekly_quota_hours` first. Any new project/product exceeding the Focus Rule (`active <= 2`) or available capacity MUST explicitly state what gets completed, scaled down, or moved to `queued`. Major new launches are blocked during `exam` mode.
+   - **Zero-Sum Budget Guardrail**: No arbitrary subsidiary count cap (`active <= 2` retired). Instead, any added quest/product MUST fit inside the **100% time & money cap** by shifting priority rank or cutting lower-priority quotas (`exam` mode pauses major new launches).
    - **Tactical Isolation**: `/weekly-plan` and `/daily-plan` NEVER run full pitches; if a milestone completion is spotted, show a 1-line prompt to run `/project-manage`.
 
 ## 4. Privacy & GitHub Sync Guardrail

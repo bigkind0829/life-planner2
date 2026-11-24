@@ -33,9 +33,9 @@ Read ONLY:
 
 ### 3. Draft & Confirm Weekly Time-Blocked Plan
 
-Follow **Constrained Top-Down**:
-1. Place fixed weekly commitments + `vitality` sleep/exercise floor + protected `connection-joy` rest block first.
-2. Select **at most 3 Weekly Core Targets** directly advancing the active Monthly plan.
-3. Map targets into realistic day-level focus blocks while keeping ~20% daily buffer slack.
+Follow **Priority-Driven Zero-Sum Allocation (Hard 100% Cap)**:
+1. Pull requirements from active requirement files (`profile/`, active Monthly Priority Stack, and `## Next Actions` of funded `projects/*/index.md`) without waking subagents.
+2. Lock **P0** first (fixed weekly commitments + survival sleep floor + ~20% daily buffer).
+3. Allocate remaining weekly hours strictly in **Priority Stack order (`P1 → P2 → ... → PN`)** into concrete day-level time blocks. **Total allocated hours MUST NOT exceed 100% of available capacity** — any overflow from lower-priority items is transparently deferred instead of overbooked.
 
 Present the proposed week cleanly for quick user tweaks, then write `plans/YYYY/weekly/YYYY-Www.md` following `templates/plans/weekly.md` with valid YAML frontmatter (`id: "YYYY-Www"`, `parent_id: "YYYY-MM"`, `consecutive_miss_weeks`, `floors_ok`).

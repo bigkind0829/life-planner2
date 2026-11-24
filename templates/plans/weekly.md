@@ -17,17 +17,15 @@ updated_at: "YYYY-MM-DD"
 
 # YYYY-W## Weekly Plan
 
-## Weekly Core Targets (Max 3)
+## Active Priority Stack & Zero-Sum Weekly Budget (≤ 100%)
 
-- [ ] **[Domain]** Target 1
-- [ ] **[Domain]** Target 2
-- [ ] **[Domain]** Target 3
-
-## Floor Commitments
-
-- [ ] Vitality floor (sleep & exercise sessions)
-- [ ] Connection & Joy protected block
-- [ ] Wealth check / budget guardrail
+| Priority | Domain / Subsidiary | Weekly Quota (h) | Key Focus / Next Action |
+| :---: | :--- | :---: | :--- |
+| **P0** | Fixed Obligations + Survival Floor + 20% Buffer | Fixed | Non-negotiable base |
+| **P1** | | | |
+| **P2** | | | |
+| **P3** | | | |
+| *Deferred* | *(Overflow beyond 100% cap)* | 0h | Deferred transparently |
 
 ## Time-Block Allocation
 

@@ -16,23 +16,23 @@ updated_at: "YYYY-MM-DD"
 
 # YYYY-MM-DD Daily Plan
 
-## Top 3 MITs (Most Important Tasks)
+## Concrete Time-Blocked Timetable (≤ 100% Capacity, ~20% Buffer)
 
-1. [ ] **[Domain]** MIT 1
-2. [ ] **[Domain]** MIT 2
-3. [ ] **[Domain]** MIT 3
+> No artificial task-count cap. Ordered by active Priority Stack (`P0` survival/fixed + buffer first, then `P1 → PN`). Tag must-not-miss tasks with `[핵심]`.
 
-## Time Blocks (with ~20% Buffer)
+| Time | Priority | Task / Block | Status |
+| :--- | :---: | :--- | :---: |
+| 07:00–08:00 | P0 | Morning routine / Survival floor | [ ] |
+| 08:30–11:30 | P1 | **[핵심]** Primary focus block | [ ] |
+| 12:00–13:00 | P0 | Lunch & break (Buffer) | [ ] |
+| 13:30–16:30 | P1/P2 | Scheduled focus / fixed commitment | [ ] |
+| 17:00–18:30 | P0 | Buffer / Overflow / Rest (~20%) | [ ] |
+| 19:00–21:00 | P2/P3 | Secondary priority block | [ ] |
+| 23:30–07:00 | P0 | Sleep (Non-negotiable) | [ ] |
 
-| Time | Block | Type |
-| :--- | :--- | :--- |
-| 07:00–08:00 | Morning routine / Vitality | Floor |
-| 09:00–12:00 | Deep focus / Fixed work | Fixed / MIT |
-| 12:00–13:00 | Lunch & break | Buffer |
-| 13:00–17:00 | Work / MIT 2 | Fixed / MIT |
-| 17:00–18:30 | Buffer / Overflow / Rest | Buffer (~20%) |
-| 19:00–21:00 | MIT 3 / Connection & Joy | MIT / Floor |
-| 23:30–07:00 | Sleep | Non-negotiable |
+## Deferred / Overflow (Outside Today's 100% Cap)
+
+- *(Lower-priority tasks intentionally left off today's timetable)*
 
 ## Quick Notes / Ad-Hoc Changes
 
