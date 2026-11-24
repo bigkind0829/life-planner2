@@ -1,0 +1,21 @@
+# Personal life data at workspace root (NEVER commit to remote repositories by default)
+/profile/
+/plans/
+/logs/
+/council/
+
+# Working scratchpads and local tickets
+/.scratch/
+
+# Local secrets & environment variables
+.env
+.env.*
+*.key
+*.pem
+
+# OS & editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak

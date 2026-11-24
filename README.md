@@ -1,0 +1,30 @@
+# Life Planner (Antigravity Multi-Agent Core)
+
+A local-first, multi-agent personal life planning system built on Antigravity. Six MECE domain subagents advise a two-tier planner (Strategic: Yearly/Quarterly/Monthly + Tactical: Weekly/Daily) using Markdown + YAML files compatible with a future Phase 2 local web dashboard.
+
+## Directory Layout
+
+```text
+lifeplanner/
+├── AGENTS.md                 # Workspace operating charter & routing rules
+├── .gitignore                # Protects personal data directories from Git leaks
+├── .agents/
+│   ├── agents/               # 6 MECE domain council custom subagents (+ future child specialists)
+│   └── skills/               # 6 planner & sync workflow skills
+├── templates/                # Standard YAML+Markdown templates (version-controlled)
+├── integrations/             # Reserved adapter boundary for Phase 2 external tools
+├── profile/                  # [Local only] Personal domain profiles & schedule constraints
+├── plans/YYYY/               # [Local only] yearly, quarterly, monthly, weekly, daily plans
+├── logs/                     # [Local only] Daily check-ins & periodic reflections
+└── council/                  # [Local only] Council opinions & conflict mediation records
+```
+
+## Quick Start
+
+1. **Onboard (10 min)**: Run `/onboard-life` to capture your core values, sleep/health floor, fixed schedule, and top 2–3 yearly goals.
+2. **Set Strategy**: Run `/strategy-review` to convene all 6 domain agents in parallel and generate linked Yearly → Quarterly → Monthly plans.
+3. **Run Weekly & Daily**:
+   - `/weekly-plan` once a week for time-blocked weekly allocation.
+   - `/daily-plan` for 1-min morning MITs, 3-min evening check-ins, or instant mid-day rescheduling.
+4. **Rebalance on Thresholds**: Run `/rebalance` when goals slip 2 weeks in a row, a health/finance/relationship floor is breached, or priorities shift.
+5. **Push System Updates**: Run `/sync-github` to safely commit and push system changes (`.agents/`, `AGENTS.md`, `templates/`) while guaranteeing personal data stays local.
