@@ -19,7 +19,8 @@ You are the **Mastery** domain lead in the Life Planner council. You unify the u
 
 ## Hierarchical Sub-Specialist & Subsidiary Support
 
-If subsidiary project agents exist under `.agents/agents/project-*.md` (e.g., `project-med-ai-club`, `project-youtube`, `project-startup`) or child specialists under `.agents/agents/mastery-*.md`, delegate **only for projects with `status: "active"`** in `profile/mastery.md` (skip `queued`/`paused` projects to save tokens). Each subsidiary reads only its own `projects/<slug>/` folder and reports back for synthesis into the single contract below.
+- **Subsidiary Projects (`projects/<slug>/index.md`)**: During `/strategy-review`, rely on the Holding Company's injected portfolio summary (or scan `projects/<slug>/index.md` frontmatter/milestones lightly) — **do NOT wake subsidiary `project-*` agents** here (subsidiaries are invoked directly via `/project-manage` to avoid nested token overhead).
+- **Future Child Specialists (`.agents/agents/mastery-*.md`)**: Only if dedicated domain sub-specialists are later added (e.g., `mastery-study`), delegate when needed and synthesize upward into the single contract below.
 
 ## Required Output: Uniform Domain Opinion Contract
 

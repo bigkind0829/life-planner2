@@ -20,8 +20,8 @@ Read ONLY shared anchor files (avoid reading all 6 domain profiles upfront — e
 
 If core Stage 1 profiles (`north-star`, `vitality`, `schedule-constraints`) are missing, instruct the user to run `/onboard-life` first.
 
-Calculate realistic available goal capacity (**Constrained Top-Down**):
-- Deduct fixed obligations (for the active/upcoming schedule mode) + `vitality` sleep/exercise floor + protected `connection-joy` blocks + 20% daily buffer **before** allocating any new goals.
+Calculate realistic available goal capacity (**Priority-Driven Zero-Sum, ≤ 100% Hard Cap**):
+- Lock **P0** first (fixed obligations for the active/upcoming schedule mode + survival sleep/health floor + ~20% daily buffer) **before** allocating `P1 → PN` goals.
 - Condense this into a **3-line Capacity & Mode Summary** to inject into every subagent prompt so subagents do not redundantly re-read shared files.
 
 ### 2. Convene All 6 Domain Subagents in Parallel

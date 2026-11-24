@@ -15,21 +15,35 @@ floors_ok: true
 updated_at: "YYYY-MM-DD"
 ---
 
-# YYYY Q# Quarterly Plan
+# YYYY Q# Quarterly Plan (4-Part Executive Approval Sheet)
 
-## Quarterly Focus
+## 1. 지난 분기 실적 (Prior Quarter Results)
 
-- Primary outcome that advances the yearly plan this quarter.
+- Key outcomes, misses, and P0 floor compliance from last quarter.
 
-## Milestones (Max 3)
+## 2. 우선순위 조정 (Quarterly Priority Stack: P0 + P1~PN)
 
-- [ ] **[Domain]** Milestone 1 — *Verification criterion*
-- [ ] **[Domain]** Milestone 2 — *Verification criterion*
-- [ ] **[Domain]** Milestone 3 — *Verification criterion*
+- **P0 (Survival Floor & Fixed)**: Sleep/fixed obligations + ~20% buffer
+- **P1**:
+- **P2**:
+- **P3**:
 
-## Capacity & Floor Check
+## 3. 다음 계획 & 마일스톤 (Next Plan & Approved Quest/Product)
 
-- Verified against `profile/schedule-constraints.md` and `profile/vitality.md`.
+- [ ] **[P1]** Milestone 1 — *Verification criterion*
+- [ ] **[P2]** Milestone 2 — *Verification criterion*
+- [ ] **[P3]** Milestone 3 — *Verification criterion*
+
+## 4. 시간·돈 결재 (Zero-Sum Hard 100% Cap)
+
+> Total allocated hours and budget MUST stay `≤ 100%`. Overflow items auto-defer to `0h` (`queued`).
+
+| Priority | Domain / Subsidiary | Weekly Hours | Quarterly Budget | Status |
+| :---: | :--- | :---: | :---: | :---: |
+| **P0** | Fixed + Survival + 20% Buffer | Fixed | Fixed | Locked |
+| **P1** | | | | Approved |
+| **P2** | | | | Approved |
+| *Overflow* | *(Beyond 100% cap)* | 0h | 0 | Deferred |
 
 ## External Signals (`world-radar`)
 

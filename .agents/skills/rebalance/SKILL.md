@@ -26,8 +26,8 @@ Summon ONLY the affected domain subagents **plus `north-star`** in parallel usin
 
 ### 3. Mediate & Propose Adjustment Options
 
-1. Use `north-star` charter rules to rank what stays protected vs. what should shrink, defer, or drop.
-2. Present **2–3 concrete rebalancing options** (e.g., Option A: Reduce Monthly scope to protect Vitality floor; Option B: Shift timeline by 1 month; Option C: Temporarily trade off a non-floor item with explicit end date).
+1. Use `north-star` charter rules to re-rank the active **Priority Stack (`P0` survival/fixed + `P1~PN`)** so total allocated time and money return strictly to **`≤ 100%`** (never approve an overbooked recovery plan).
+2. Present **2–3 concrete rebalancing options** (e.g., Option A: Scale down/defer lowest-priority `PN` items to protect P0 floors; Option B: Shift milestone timeline by 1 month; Option C: Temporarily swap priority order with an explicit end date).
 3. Wait for explicit user approval before modifying any Monthly, Quarterly, or Yearly plan.
 
 ### 4. Apply Approved Changes & Archive

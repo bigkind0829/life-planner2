@@ -19,7 +19,7 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 ### Two-Tier Planner Layer (`.agents/skills/`)
 - **Strategic Planner (`/strategy-review`) — Yearly / Quarterly / Monthly**:
   - Summons all 6 domain subagents **in parallel** using `invoke_subagent`.
-  - Applies **Constrained Top-Down** capacity budgeting: lock fixed schedule + vitality floor + buffer first, then fit goals into remaining capacity.
+  - Produces a **4-Part Executive Approval Sheet** enforcing **Priority-Driven Zero-Sum Allocation (≤ 100% Hard Cap)**: lock P0 (fixed schedule + survival floor + ~20% buffer) first, then allocate `P1 → PN` strictly within 100% of available time and money.
   - Uses `north-star` charter rules for 1st-pass conflict mediation; presents only core unresolved trade-offs as 2–3 concrete scenarios for user choice.
   - Archives council opinions and final decisions in `council/`.
 - **Tactical Planner (`/weekly-plan`, `/daily-plan`) — Weekly / Daily**:

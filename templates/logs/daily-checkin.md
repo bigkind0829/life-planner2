@@ -2,7 +2,8 @@
 date: "YYYY-MM-DD"
 plan_id: "YYYY-MM-DD"
 energy: 3          # 1 (depleted) to 5 (high)
-mit_completed: 0   # 0 to 3
+blocks_completed: 0
+blocks_planned: 0
 floor_breached: false
 updated_at: "YYYY-MM-DD"
 ---

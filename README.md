@@ -23,10 +23,11 @@ lifeplanner/
 ## Quick Start
 
 1. **Onboard (10 min)**: Run `/onboard-life` to capture your core values, sleep/health floor, fixed schedule, and top 2–3 yearly goals.
-2. **Set Strategy**: Run `/strategy-review` to convene all 6 domain agents in parallel and generate linked Yearly → Quarterly → Monthly plans.
-3. **Run Weekly & Daily**:
-   - `/weekly-plan` once a week for time-blocked weekly allocation.
-   - `/daily-plan` for 1-min morning MITs, 3-min evening check-ins, or instant mid-day rescheduling.
+2. **Set Strategy**: Run `/strategy-review` to convene all 6 domain agents in parallel and generate 4-Part Approval Sheets (Results → Priority Stack → Next Plan & 3-Option Pitch → Zero-Sum `≤ 100%` Time & Money Budget) across Yearly → Quarterly → Monthly plans.
+3. **Run Weekly, Daily & Subsidiaries**:
+   - `/weekly-plan` once a week for priority-ordered weekly time-blocking (`≤ 100%`).
+   - `/daily-plan` for concrete morning time-blocked timetables (variable task count + ~20% buffer), 3-min evening check-ins, or instant mid-day rescheduling.
+   - `/project-manage` to work with dedicated subsidiary project agents (`projects/<slug>/`) and pitch next quests/products on milestone completion.
 4. **Rebalance on Thresholds**: Run `/rebalance` when goals slip 2 weeks in a row, a health/finance/relationship floor is breached, or priorities shift.
 5. **Audit & Upgrade System**: Run `/system-audit` anytime to inspect token waste, workflow friction, schema/privacy integrity, and prioritized upgrade ideas.
 6. **Push System Updates**: Run `/sync-github` to safely commit and push system changes (`.agents/`, `AGENTS.md`, `templates/`) while guaranteeing personal data stays local.
