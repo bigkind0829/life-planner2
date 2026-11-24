@@ -9,8 +9,8 @@ lifeplanner/
 ├── AGENTS.md                 # Workspace operating charter & routing rules
 ├── .gitignore                # Protects personal data directories from Git leaks
 ├── .agents/
-│   ├── agents/               # 6 MECE domain council + on-demand system-architect
-│   └── skills/               # 7 planner, system-audit & sync workflow skills
+│   ├── agents/               # 6 MECE domain council + subsidiary project-* agents + system-architect
+│   └── skills/               # 8 planner, project-manage, system-audit & sync workflow skills
 ├── templates/                # Standard YAML+Markdown templates (version-controlled)
 ├── integrations/             # Reserved adapter boundary for Phase 2 external tools
 ├── profile/                  # [Local only] Personal domain profiles & schedule constraints

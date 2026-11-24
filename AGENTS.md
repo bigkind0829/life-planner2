@@ -31,6 +31,10 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 - `system-architect` (`.agents/agents/system-architect.md`) operates **outside** the 6-domain life council.
 - Invoked **only** via `/system-audit` (never during routine life planning) to audit token waste, workflow friction, schema/privacy integrity, and propose prioritized system upgrades.
 
+### Subsidiary Project Agents (Holding–Subsidiary Architecture)
+- Dedicated project agents (`.agents/agents/project-<slug>.md`, `model: flash`) manage individual projects end-to-end inside `projects/<slug>/` (goals, milestones, deliverables, `Next Actions`).
+- **Contract**: Holding Company (Life Planner) sets `status` and `weekly_quota_hours`; subsidiaries publish 1–3 concrete `Next Actions` in `projects/<slug>/index.md` for `/weekly-plan` to read without waking subsidiary agents.
+
 ## 2. Routing Rules
 
 | User Intent | Workflow to Run |
@@ -40,6 +44,7 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 | Weekly review or next week's time-blocked plan | `/weekly-plan` |
 | Morning briefing, evening 3-min check-in, mid-day reschedule | `/daily-plan` |
 | Chronic slippage, floor breach, or upstream goal revision | `/rebalance` |
+| Plan, work on, or spin up a subsidiary project (`projects/<slug>/`) | `/project-manage` |
 | Audit token waste, workflow friction, or propose/apply system upgrades | `/system-audit` |
 | Commit and push system updates to GitHub safely | `/sync-github` |
 

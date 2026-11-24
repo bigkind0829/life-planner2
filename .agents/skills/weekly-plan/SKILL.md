@@ -19,6 +19,7 @@ Read ONLY:
 - Active monthly plan: `plans/YYYY/monthly/YYYY-MM.md` *(if missing, run standalone using `profile/` priorities with `parent_id: null` and offer `/strategy-review` afterward)*
 - `profile/schedule-constraints.md` (apply `active_mode`: `semester` / `exam` / `vacation`)
 - `profile/vitality.md` (floor only)
+- `## Next Actions` section from `projects/*/index.md` ONLY for projects with `status: "active"` *(never summon subsidiary agents here; if an active project has no Next Actions listed, show a 1-line notice at the top of the weekly plan)*
 - At most 1 previous weekly plan (`plans/YYYY/weekly/YYYY-W<prev>.md`) and at most the last 7 daily check-in files from `logs/` (if present)
 
 ### 2. Graceful Review & Escalation Check
