@@ -28,7 +28,7 @@ Audit across 4 focused dimensions:
 
 3. **Schema & Privacy Integrity**
    - Verify YAML frontmatter consistency between `templates/` and active `profile/` & `plans/` files (`parent_id` chains, required keys, ISO filenames).
-   - Verify `.gitignore` protects all personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `.scratch/`, `.env`).
+   - Verify `.gitignore` protects all personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `projects/`, `.scratch/`, `.env`).
 
 4. **High-Leverage Upgrade Proposals**
    - Suggest concrete, practical upgrades tailored to this workspace (Quick Wins vs. Next-Phase capabilities such as local dashboard, external integrations, specialized child sub-agents like study/exercise/sleep only when real friction justifies splitting, or automation).

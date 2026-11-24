@@ -30,7 +30,7 @@ Run `git status --short` and `git remote -v`:
 
 ### 2. Privacy & Diff Audit
 
-1. Verify `.gitignore` contains `profile/`, `plans/`, `logs/`, `council/`, `.scratch/`, `.env`.
+1. Verify `.gitignore` contains `profile/`, `plans/`, `logs/`, `council/`, `projects/`, `.scratch/`, `.env`.
 2. Inspect `git status --short` and verify ONLY allowed system paths are modified/untracked (`.agents/`, `AGENTS.md`, `README.md`, `.gitignore`, `templates/`, `integrations/`, and future `dashboard/`).
 3. Present the exact list of files to commit and a concise proposed commit message.
 

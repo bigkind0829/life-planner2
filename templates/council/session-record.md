@@ -37,6 +37,12 @@ updated_at: "YYYY-MM-DD"
 - **Option B**: ...
 - **User Decision**: ...
 
+## Priority Stack, Proactive Pitch & Zero-Sum Approval (≤ 100%)
+
+- **Approved Priority Stack**: `P0` (Survival/Fixed/20% Buffer) → `P1` → `P2` → `P3` *(Overflow deferred to `0h`)*
+- **Proactive 3-Option Pitch Decision**: Selected option (or deferred to `Ideas & Backlog`)
+- **Zero-Sum Budget Verified (`≤ 100%` time & money)**: Yes / Notes
+
 ## Downstream Plans Updated
 
 - `plans/YYYY/...`
