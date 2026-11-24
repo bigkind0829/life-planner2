@@ -16,6 +16,7 @@ Read ONLY shared anchor files (avoid reading all 6 domain profiles upfront — e
 - `profile/vitality.md` (hard floor only)
 - `profile/north-star.md` (charter & top values)
 - Existing active parent/target plans in `plans/YYYY/` and at most the last 2 weekly plans (skip raw daily `logs/`)
+- Frontmatter + `## Milestones` summary of `projects/*/index.md` *(lightweight scan only — do NOT wake subsidiary agents during `/strategy-review`)*
 
 If core Stage 1 profiles (`north-star`, `vitality`, `schedule-constraints`) are missing, instruct the user to run `/onboard-life` first.
 
@@ -42,6 +43,10 @@ Wait until all 6 subagents report back.
 1. Synthesize the 6 domain reports and list explicit cross-domain conflicts (e.g., `mastery` or `wealth` hours exceeding remaining capacity or violating `vitality` / `connection-joy` floors).
 2. Apply `north-star` charter rules to draft a **1st-pass mediated recommendation**.
 3. If major unresolved trade-offs remain, present **2–3 concrete scenarios** (e.g., **Option A: Recommended Balanced**, **Option B: Focused Sprint**, **Option C: Recovery/Consolidation**) showing what each gains and sacrifices, and wait for the user to choose or tweak.
+4. **Proactive Next Quest & New Product Pitch (Holding-Company Tier)**: At the end of Monthly, Quarterly, and Yearly reviews (except during `exam` mode, where major launches pause), synthesize `world-radar`, `mastery`, and `wealth` signals into a **3-Option Portfolio Card** (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) for life-level new quests, revenue streams, or portfolio shifts.
+   - Each card MUST include 5 fixed fields: `핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과(수익/성장/유튜브 소재력)`, `트레이드오프`.
+   - Enforce **Strict 1-In, 1-Out**: if adopting an option pushes `active` projects past 2 or exceeds capacity, explicitly specify which existing project finishes, scales down, or moves to `queued`.
+   - When the user approves a new quest/product, offer to log it as a content candidate in `projects/youtube/index.md` (`## Ideas & Backlog`) if relevant, and park unchosen good ideas in the relevant project's backlog.
 
 ### 4. Write Linked Plans & Archive Council Record
 

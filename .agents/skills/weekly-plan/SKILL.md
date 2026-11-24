@@ -19,7 +19,7 @@ Read ONLY:
 - Active monthly plan: `plans/YYYY/monthly/YYYY-MM.md` *(if missing, run standalone using `profile/` priorities with `parent_id: null` and offer `/strategy-review` afterward)*
 - `profile/schedule-constraints.md` (apply `active_mode`: `semester` / `exam` / `vacation`)
 - `profile/vitality.md` (floor only)
-- `## Next Actions` section from `projects/*/index.md` ONLY for projects with `status: "active"` *(never summon subsidiary agents here; if an active project has no Next Actions listed, show a 1-line notice at the top of the weekly plan)*
+- `## Next Actions` and `## Milestones` (lightweight status check only) from `projects/*/index.md` ONLY for projects with `status: "active"` *(never summon subsidiary agents here; if an active project has no Next Actions listed or its current milestone is completed, show a 1-line notice at the top of the weekly plan — e.g., `"완료된 마일스톤이 있습니다 — /project-manage에서 다음 퀘스트·신상품 3안을 추천받을까요?"`)*
 - At most 1 previous weekly plan (`plans/YYYY/weekly/YYYY-W<prev>.md`) and at most the last 7 daily check-in files from `logs/` (if present)
 
 ### 2. Graceful Review & Escalation Check

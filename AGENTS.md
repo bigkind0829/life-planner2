@@ -62,6 +62,11 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
    - `Conflicts & Risks` (tensions with other domains or capacity)
    - `Indicators` (1–2 measurable metrics)
 5. **Phase 2 Schema Integrity**: Every file in `plans/YYYY/` MUST start with valid YAML frontmatter matching `templates/plans/` (`id`, `period`, `parent_id`, `status`, `start_date`, `end_date`, `progress`, `domains`, `floors_ok`, `updated_at`). Use ASCII/ISO filenames (`YYYY-MM-DD`, `YYYY-Www`, `YYYY-MM`, `YYYY-Q#`) for OneDrive/Windows safety.
+6. **Proactive Quest & Product Pitch Loop**:
+   - **2-Tier Ownership**: Holding Company (`/strategy-review` — Monthly/Quarterly/Yearly) pitches life-level new quests, revenue streams, or portfolio shifts; Subsidiaries (`/project-manage` & `project-*` on milestone/quest completion) pitch next quests or new products/features inside their own scope.
+   - **3-Option Portfolio Card**: Every proactive pitch offers exactly 3 options (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) with 5 fixed fields (`핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과(수익/성장/유튜브 소재력)`, `트레이드오프`).
+   - **Strict 1-In, 1-Out & Floor Guardrail**: Existing `active` subsidiaries replace quests inside their existing `weekly_quota_hours` first. Any new project/product exceeding the Focus Rule (`active <= 2`) or available capacity MUST explicitly state what gets completed, scaled down, or moved to `queued`. Major new launches are blocked during `exam` mode.
+   - **Tactical Isolation**: `/weekly-plan` and `/daily-plan` NEVER run full pitches; if a milestone completion is spotted, show a 1-line prompt to run `/project-manage`.
 
 ## 4. Privacy & GitHub Sync Guardrail
 
