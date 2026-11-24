@@ -16,10 +16,10 @@ Do **NOT** summon the 6 domain subagents during normal `/weekly-plan` runs. Keep
 ### 1. Gather Lightweight Context
 
 Read ONLY:
-- Active monthly plan: `plans/YYYY/monthly/YYYY-MM.md`
-- `profile/schedule-constraints.md`
+- Active monthly plan: `plans/YYYY/monthly/YYYY-MM.md` *(if missing, run standalone using `profile/` priorities with `parent_id: null` and offer `/strategy-review` afterward)*
+- `profile/schedule-constraints.md` (apply `active_mode`: `semester` / `exam` / `vacation`)
 - `profile/vitality.md` (floor only)
-- Previous weekly plan (`plans/YYYY/weekly/YYYY-W<prev>.md`) and recent check-in logs from `logs/` (if present)
+- At most 1 previous weekly plan (`plans/YYYY/weekly/YYYY-W<prev>.md`) and at most the last 7 daily check-in files from `logs/` (if present)
 
 ### 2. Graceful Review & Escalation Check
 

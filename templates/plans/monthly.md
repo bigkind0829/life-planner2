@@ -4,7 +4,7 @@ period: "monthly"
 parent_id: "YYYY-Q1"
 status: "active"
 start_date: "YYYY-MM-01"
-end_date: "YYYY-MM-31"
+end_date: "YYYY-MM-DD" # actual last day of month (28/29/30/31)
 progress: 0
 domains:
   - vitality

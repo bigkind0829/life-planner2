@@ -18,7 +18,7 @@ Run this workflow when one or more triggers apply:
 
 ### 1. Diagnose Scope
 
-Read the relevant active plans (`monthly`, `weekly`, `daily`), recent check-in logs (`logs/`), and `profile/schedule-constraints.md`. Identify **which domains are directly involved** (e.g., `mastery` + `vitality` for overwork; `wealth` + `mastery` for income pivot).
+Read ONLY the active Monthly plan, at most the last 2 Weekly plans, at most the last 7 daily check-in files in `logs/`, and `profile/schedule-constraints.md` (`active_mode`). Identify **which domains are directly involved** (e.g., `mastery` + `vitality` for overwork; `wealth` + `mastery` for income pivot), and prepare a 3-line capacity & trigger summary to inject into summoned subagents so they do not re-read shared files.
 
 ### 2. Selective Parallel Council Summon
 

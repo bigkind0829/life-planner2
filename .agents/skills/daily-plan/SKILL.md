@@ -9,7 +9,8 @@ Run ultra-lightweight daily execution without invoking the 6 domain subagents.
 
 ## Speed & Isolation Rule
 
-Do **NOT** summon the 6 domain subagents here. Read only the active Weekly plan (`plans/YYYY/weekly/YYYY-Www.md`), `profile/schedule-constraints.md`, `profile/vitality.md` floor, and yesterday's plan/log (if available).
+Do **NOT** summon the 6 domain subagents here. Read ONLY the active Weekly plan (`plans/YYYY/weekly/YYYY-Www.md`), `profile/schedule-constraints.md` (`active_mode`), `profile/vitality.md` floor, and at most 1 previous day's plan/log (if available).
+- **Standalone Fallback**: If no active Weekly plan exists yet, derive today's Top 3 MITs from `profile/` priorities using `parent_id: null`, and briefly offer `/weekly-plan` or `/strategy-review` when ready.
 
 ## Modes
 

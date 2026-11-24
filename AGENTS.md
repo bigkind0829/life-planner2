@@ -16,9 +16,6 @@ Time (schedule) is a shared scarce resource managed by the Planner Layer, not a 
 | `connection-joy` | 관계·삶의 질 | Family, key relationships, rest, hobbies, meaningful experiences |
 | `world-radar` | 외부 환경 레이더 | Targeted web search on 3–5 user focus topics → plan impacts & risks |
 
-#### Hierarchical Sub-Specialist Extensibility
-Each of the 6 domain agents acts as a **domain lead**. Later, any domain may add child sub-specialists under `.agents/agents/` (for example, `vitality-sleep`, `vitality-workout`, `wealth-invest`, `mastery-career`). When child specialists exist, the parent domain lead delegates to them and synthesizes their input into the **same Uniform Domain Opinion Contract** upward so the Strategic Planner interface never changes.
-
 ### Two-Tier Planner Layer (`.agents/skills/`)
 - **Strategic Planner (`/strategy-review`) — Yearly / Quarterly / Monthly**:
   - Summons all 6 domain subagents **in parallel** using `invoke_subagent`.

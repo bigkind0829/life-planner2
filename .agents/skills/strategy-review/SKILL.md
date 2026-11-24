@@ -11,15 +11,17 @@ Convene the 6-member domain council to create or revise Yearly, Quarterly, and M
 
 ### 1. Load Context & Capacity Floor
 
-Read:
-- `profile/schedule-constraints.md`
-- `profile/north-star.md`, `profile/vitality.md`, `profile/wealth.md`, `profile/mastery.md`, `profile/connection-joy.md`, `profile/world-radar.md`
-- Existing active parent/target plans in `plans/YYYY/` and recent review notes in `logs/`
+Read ONLY shared anchor files (avoid reading all 6 domain profiles upfront — each domain subagent owns reading its own profile):
+- `profile/schedule-constraints.md` (check `active_mode`: `semester` / `exam` / `vacation`)
+- `profile/vitality.md` (hard floor only)
+- `profile/north-star.md` (charter & top values)
+- Existing active parent/target plans in `plans/YYYY/` and at most the last 2 weekly plans (skip raw daily `logs/`)
 
 If core Stage 1 profiles (`north-star`, `vitality`, `schedule-constraints`) are missing, instruct the user to run `/onboard-life` first.
 
 Calculate realistic available goal capacity (**Constrained Top-Down**):
-- Deduct fixed obligations + `vitality` sleep/exercise floor + protected `connection-joy` blocks + 20% daily buffer **before** allocating any new goals.
+- Deduct fixed obligations (for the active/upcoming schedule mode) + `vitality` sleep/exercise floor + protected `connection-joy` blocks + 20% daily buffer **before** allocating any new goals.
+- Condense this into a **3-line Capacity & Mode Summary** to inject into every subagent prompt so subagents do not redundantly re-read shared files.
 
 ### 2. Convene All 6 Domain Subagents in Parallel
 
@@ -29,9 +31,9 @@ Invoke all 6 custom subagents concurrently in a single turn using `invoke_subage
 - `wealth`
 - `mastery`
 - `connection-joy`
-- `world-radar` (remind it to search ONLY the 3–5 topics in `profile/world-radar.md` and return at most 3 high-signal impacts)
+- `world-radar` (for **Monthly** reviews, request a lightweight 2–3 urgent-topic scan; for **Quarterly/Yearly** reviews, scan all 3–5 topics in `profile/world-radar.md`, max 3 high-signal impacts)
 
-Pass each subagent the target planning horizon (e.g., `2026`, `2026-Q4`, `2026-11`), remaining realistic capacity, and any specific user goal or life shift. Require every subagent to return the **Uniform Domain Opinion Contract** (Current State & Floor, 1–3 Recommendations, Conflicts & Risks, 1–2 Indicators).
+Pass each subagent the target planning horizon (e.g., `2026`, `2026-Q4`, `2026-12`), the 3-line Capacity & Mode Summary, active parent plan summary, and any specific user goal or life shift. Require every subagent to return the **Uniform Domain Opinion Contract** (Current State & Floor, 1–3 Recommendations, Conflicts & Risks, 1–2 Indicators).
 
 Wait until all 6 subagents report back.
 
@@ -51,3 +53,4 @@ After user confirmation:
    - Monthly: `plans/YYYY/monthly/YYYY-MM.md` (`parent_id: "YYYY-Q#"`)
 3. Verify `floors_ok` accurately reflects whether all non-negotiable floors are preserved.
 4. Offer to generate the current week's tactical plan via `/weekly-plan`.
+5. For **Monthly** reviews, append a 1-line optional reminder: *"이번 달 `/system-audit`도 함께 돌릴까요?"* (never auto-invoke).

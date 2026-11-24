@@ -21,8 +21,6 @@ Invoke the `system-architect` subagent via `invoke_subagent`:
 - Pass the user's specific focus (e.g., full audit, token efficiency check, upgrade brainstorming, or schema check).
 - Wait for `system-architect` to return its 4-section audit report.
 
-*(Note: If `system-architect` was just created in the current session and is not yet registered in the subagent list until the next session, perform the exact 4-dimension audit directly following `.agents/agents/system-architect.md`.)*
-
 ### 2. Present Findings & Get Approval
 
 - Present a concise Korean summary of:
@@ -37,4 +35,4 @@ When the user selects items to implement:
 1. Edit only the approved system files (`.agents/`, `AGENTS.md`, `templates/`, `README.md`, `integrations/`, `dashboard/`).
 2. Keep `AGENTS.md` lean and preserve all core Life Planner contracts (6 MECE life domains, Phase 2 YAML schema, `.gitignore` privacy boundary).
 3. Verify the modified files cleanly.
-4. Offer to run `/sync-github` to safely commit and push the system upgrade to GitHub.
+4. Per the Auto-Backup Policy in `AGENTS.md`, automatically run the `/sync-github` privacy audit and commit + push verified system files to `origin`.

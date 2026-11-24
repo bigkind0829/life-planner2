@@ -29,3 +29,7 @@ lifeplanner/
 4. **Rebalance on Thresholds**: Run `/rebalance` when goals slip 2 weeks in a row, a health/finance/relationship floor is breached, or priorities shift.
 5. **Audit & Upgrade System**: Run `/system-audit` anytime to inspect token waste, workflow friction, schema/privacy integrity, and prioritized upgrade ideas.
 6. **Push System Updates**: Run `/sync-github` to safely commit and push system changes (`.agents/`, `AGENTS.md`, `templates/`) while guaranteeing personal data stays local.
+
+## Extensibility
+
+- **Hierarchical Sub-Specialists**: Each of the 6 domain agents acts as a domain lead. Future child specialists (e.g., `vitality-sleep`, `wealth-invest`, `mastery-career`) can be added under `.agents/agents/<domain>-<specialty>.md`; parent leads delegate to them and synthesize upward into the same Uniform Domain Opinion Contract without changing planner skills.

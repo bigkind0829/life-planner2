@@ -23,4 +23,4 @@ focus_topics: []     # Used primarily by world-radar (3-5 topics)
 
 ## Notes & History
 
-- Context learned from conversations over time.
+- Context learned from conversations over time. *(Keep latest 5 entries; fold older notes into a 1-line archive summary to prevent context bloat.)*
