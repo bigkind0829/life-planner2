@@ -2,7 +2,7 @@
 id: "project-slug"
 domain: "mastery" # mastery | wealth | connection-joy | multi
 status: "queued"  # active | queued | paused | completed
-owner_agent: "project-<slug>"
+owner_agent: "project-lead"
 parent_plan: "2027-Q1"
 weekly_quota_hours: 0 # Allocated by Holding Company (Life Planner)
 updated_at: "YYYY-MM-DD"
@@ -16,13 +16,16 @@ updated_at: "YYYY-MM-DD"
 
 ## Next Actions (Synced to Weekly/Daily)
 
-> Holding Company (`/weekly-plan`) reads ONLY this section for `status: "active"` projects (max 3 bite-sized tasks fitting within `weekly_quota_hours`). If empty while `active`, `/weekly-plan` flags a 1-line notice.
+> Single Source of Truth (SSOT): `/weekly-plan` reads ONLY this section for `status: "active"` projects (max 3 bite-sized tasks fitting within `weekly_quota_hours`). If empty while `active`, `/weekly-plan` flags a 1-line notice.
 
 - [ ] Concrete next action 1 (est. time)
 
 ## Operating Rules & Constraints
 
-- Hard boundaries (e.g., exam-mode pause rule, weekly time cap, budget cap).
+> Playbook for `project-lead`: define project-specific scope, hard boundaries (e.g., exam-mode pause rule, budget cap, quality bar), and review/escalation triggers here.
+
+- **Scope**: ...
+- **Hard Boundaries**: ...
 
 ## Milestones
 

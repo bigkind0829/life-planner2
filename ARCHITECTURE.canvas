@@ -1,0 +1,258 @@
+{
+  "nodes": [
+    {
+      "id": "grp-core",
+      "type": "group",
+      "x": 340,
+      "y": -20,
+      "width": 320,
+      "height": 470,
+      "color": "5",
+      "label": "Core Planning Loop (4 Skills)"
+    },
+    {
+      "id": "grp-ops",
+      "type": "group",
+      "x": 340,
+      "y": 490,
+      "width": 320,
+      "height": 340,
+      "color": "6",
+      "label": "System Ops (3 Skills · 0 Subagent Calls)"
+    },
+    {
+      "id": "grp-council",
+      "type": "group",
+      "x": 760,
+      "y": -20,
+      "width": 320,
+      "height": 360,
+      "color": "1",
+      "label": "3-Axis Strategic Council (model: flash)"
+    },
+    {
+      "id": "grp-sub",
+      "type": "group",
+      "x": 760,
+      "y": 380,
+      "width": 320,
+      "height": 150,
+      "color": "3",
+      "label": "Reusable Subsidiary (model: flash)"
+    },
+    {
+      "id": "grp-data",
+      "type": "group",
+      "x": 1180,
+      "y": -20,
+      "width": 300,
+      "height": 640,
+      "color": "4",
+      "label": "Local Personal Data (.gitignore)"
+    },
+    {
+      "id": "node-main",
+      "type": "file",
+      "file": "AGENTS.md",
+      "x": 0,
+      "y": 240,
+      "width": 250,
+      "height": 150,
+      "color": "5"
+    },
+    {
+      "id": "node-strategy",
+      "type": "file",
+      "file": ".agents/skills/strategy-review/SKILL.md",
+      "x": 365,
+      "y": 20,
+      "width": 270,
+      "height": 85,
+      "color": "1"
+    },
+    {
+      "id": "node-weekly",
+      "type": "file",
+      "file": ".agents/skills/weekly-plan/SKILL.md",
+      "x": 365,
+      "y": 130,
+      "width": 270,
+      "height": 85,
+      "color": "4"
+    },
+    {
+      "id": "node-daily",
+      "type": "file",
+      "file": ".agents/skills/daily-plan/SKILL.md",
+      "x": 365,
+      "y": 240,
+      "width": 270,
+      "height": 85,
+      "color": "4"
+    },
+    {
+      "id": "node-proj-skill",
+      "type": "file",
+      "file": ".agents/skills/project-manage/SKILL.md",
+      "x": 365,
+      "y": 350,
+      "width": 270,
+      "height": 85,
+      "color": "3"
+    },
+    {
+      "id": "node-onboard",
+      "type": "file",
+      "file": ".agents/skills/onboard-life/SKILL.md",
+      "x": 365,
+      "y": 530,
+      "width": 270,
+      "height": 80,
+      "color": "6"
+    },
+    {
+      "id": "node-audit",
+      "type": "file",
+      "file": ".agents/skills/system-audit/SKILL.md",
+      "x": 365,
+      "y": 630,
+      "width": 270,
+      "height": 80,
+      "color": "6"
+    },
+    {
+      "id": "node-sync",
+      "type": "file",
+      "file": ".agents/skills/sync-github/SKILL.md",
+      "x": 365,
+      "y": 730,
+      "width": 270,
+      "height": 80,
+      "color": "6"
+    },
+    {
+      "id": "node-guardian",
+      "type": "file",
+      "file": ".agents/agents/guardian.md",
+      "x": 785,
+      "y": 20,
+      "width": 270,
+      "height": 85,
+      "color": "1"
+    },
+    {
+      "id": "node-growth",
+      "type": "file",
+      "file": ".agents/agents/growth.md",
+      "x": 785,
+      "y": 130,
+      "width": 270,
+      "height": 85,
+      "color": "2"
+    },
+    {
+      "id": "node-radar",
+      "type": "file",
+      "file": ".agents/agents/world-radar.md",
+      "x": 785,
+      "y": 240,
+      "width": 270,
+      "height": 85,
+      "color": "5"
+    },
+    {
+      "id": "node-proj-lead",
+      "type": "file",
+      "file": ".agents/agents/project-lead.md",
+      "x": 785,
+      "y": 420,
+      "width": 270,
+      "height": 90,
+      "color": "3"
+    },
+    {
+      "id": "data-profile",
+      "type": "text",
+      "text": "### `profile/`\n7개 도메인·제약 프로필\n- `guardian`: north-star, vitality, connection-joy\n- `growth`: mastery, wealth\n- `world-radar`: world-radar",
+      "x": 1205,
+      "y": 20,
+      "width": 250,
+      "height": 115,
+      "color": "4"
+    },
+    {
+      "id": "data-plans",
+      "type": "text",
+      "text": "### `plans/YYYY/`\n계층형 계획 문서\n- yearly → quarterly → monthly → weekly → daily",
+      "x": 1205,
+      "y": 155,
+      "width": 250,
+      "height": 95,
+      "color": "4"
+    },
+    {
+      "id": "data-council",
+      "type": "text",
+      "text": "### `council/`\n전략 회의 · Rebalance 의견 및 중재 아카이브",
+      "x": 1205,
+      "y": 270,
+      "width": 250,
+      "height": 85,
+      "color": "4"
+    },
+    {
+      "id": "data-projects",
+      "type": "text",
+      "text": "### `projects/*/index.md`\n**프로젝트 SSOT 계약 파일**\n- 지주사: `status`, `weekly_quota_hours`\n- `project-lead`: Operating Rules & `Next Actions`",
+      "x": 1205,
+      "y": 375,
+      "width": 250,
+      "height": 125,
+      "color": "3"
+    },
+    {
+      "id": "data-logs",
+      "type": "text",
+      "text": "### `logs/`\n일일 3분 체크인 (주간 계획이 최근 7일 참조)",
+      "x": 1205,
+      "y": 520,
+      "width": 250,
+      "height": 80,
+      "color": "4"
+    },
+    {
+      "id": "data-github",
+      "type": "text",
+      "text": "### GitHub Remote\n시스템 파일 전용 백업\n(`.agents/`, `AGENTS.md`, `ARCHITECTURE.*`, `templates/`)\n개인 데이터 **0%**",
+      "x": 1180,
+      "y": 690,
+      "width": 300,
+      "height": 130,
+      "color": "6"
+    }
+  ],
+  "edges": [
+    { "id": "e-main-strat", "fromNode": "node-main", "fromSide": "right", "toNode": "node-strategy", "toSide": "left" },
+    { "id": "e-main-week", "fromNode": "node-main", "fromSide": "right", "toNode": "node-weekly", "toSide": "left" },
+    { "id": "e-main-day", "fromNode": "node-main", "fromSide": "right", "toNode": "node-daily", "toSide": "left" },
+    { "id": "e-main-proj", "fromNode": "node-main", "fromSide": "right", "toNode": "node-proj-skill", "toSide": "left" },
+    { "id": "e-main-onb", "fromNode": "node-main", "fromSide": "right", "toNode": "node-onboard", "toSide": "left" },
+    { "id": "e-main-aud", "fromNode": "node-main", "fromSide": "right", "toNode": "node-audit", "toSide": "left" },
+    { "id": "e-main-sync", "fromNode": "node-main", "fromSide": "right", "toNode": "node-sync", "toSide": "left" },
+    { "id": "e-strat-grd", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-guardian", "toSide": "left", "color": "1", "label": "invoke" },
+    { "id": "e-strat-grw", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-growth", "toSide": "left", "color": "2", "label": "invoke" },
+    { "id": "e-strat-rad", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-radar", "toSide": "left", "color": "5", "label": "invoke (전략)" },
+    { "id": "e-week-escalate", "fromNode": "node-weekly", "fromSide": "top", "toNode": "node-strategy", "toSide": "bottom", "color": "2", "label": "에스컬레이션" },
+    { "id": "e-proj-lead", "fromNode": "node-proj-skill", "fromSide": "right", "toNode": "node-proj-lead", "toSide": "left", "color": "3", "label": "invoke (격리)" },
+    { "id": "e-grd-prof", "fromNode": "node-guardian", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
+    { "id": "e-grw-prof", "fromNode": "node-growth", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
+    { "id": "e-grw-proj", "fromNode": "node-growth", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "3", "label": "요약 스캔" },
+    { "id": "e-rad-prof", "fromNode": "node-radar", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
+    { "id": "e-lead-proj", "fromNode": "node-proj-lead", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "3", "label": "Playbook / Next Actions" },
+    { "id": "e-week-proj", "fromNode": "node-weekly", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "4", "label": "Next Actions 직접 읽기" },
+    { "id": "e-week-plans", "fromNode": "node-weekly", "fromSide": "right", "toNode": "data-plans", "toSide": "left", "color": "4" },
+    { "id": "e-day-logs", "fromNode": "node-daily", "fromSide": "right", "toNode": "data-logs", "toSide": "left", "color": "4" },
+    { "id": "e-onb-prof", "fromNode": "node-onboard", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
+    { "id": "e-sync-git", "fromNode": "node-sync", "fromSide": "right", "toNode": "data-github", "toSide": "left", "color": "6", "label": "시스템 전용 Push" }
+  ]
+}

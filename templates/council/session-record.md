@@ -1,12 +1,9 @@
 ---
 date: "YYYY-MM-DD"
 horizon: "monthly" # yearly | quarterly | monthly | rebalance
-domains_consulted:
-  - north-star
-  - vitality
-  - wealth
-  - mastery
-  - connection-joy
+council_consulted:
+  - guardian
+  - growth
   - world-radar
 selected_scenario: "Scenario A"
 updated_at: "YYYY-MM-DD"
@@ -14,22 +11,19 @@ updated_at: "YYYY-MM-DD"
 
 # Council Session Record: YYYY-MM-DD
 
-## Domain Opinions Summary
+## 3-Axis Council Opinions Summary
 
-- **north-star**: ...
-- **vitality**: ...
-- **wealth**: ...
-- **mastery**: ...
-- **connection-joy**: ...
-- **world-radar**: ...
+- **guardian** *(north-star · vitality · connection-joy)*: ...
+- **growth** *(mastery · wealth · projects)*: ...
+- **world-radar** *(external signals — omitted in standard rebalance)*: ...
 
-## Identified Conflicts
+## Identified Conflicts & Floor Warnings
 
-- Conflict 1: Domain A vs. Domain B
+- Conflict 1: `guardian` vs. `growth`
 
-## North Star 1st-Pass Mediation
+## Main Agent Mediation (`north-star` Charter)
 
-- Charter principle applied and recommended resolution.
+- Charter principle applied and balanced trade-off options prepared.
 
 ## Scenarios Presented & Final Decision
 

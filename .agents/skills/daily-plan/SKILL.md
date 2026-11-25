@@ -1,15 +1,15 @@
 ---
 name: daily-plan
-description: Tactical Planner for fast morning time-blocked schedules (priority-ordered variable task count within 100% daily capacity + 20% buffer), 3-minute evening check-ins, live conversational rescheduling, and guilt-free recovery after missed days.
+description: Tactical Planner for fast morning time-blocked schedules (priority-ordered variable task count within 100% daily capacity + 20% buffer), 3-minute evening check-ins, live conversational rescheduling, and guilt-free recovery after missed days. Runs with 0 subagent calls.
 ---
 
 # Daily Plan (Tactical Planner — Daily Timetable, Check-in & Ad-Hoc Reschedule)
 
-Run ultra-lightweight daily execution without invoking the 6 domain subagents or subsidiary agents.
+Run ultra-lightweight daily execution with **0 subagent calls**.
 
 ## Speed & Isolation Rule
 
-Do **NOT** summon domain or subsidiary subagents here. Read ONLY the active Weekly plan (`plans/YYYY/weekly/YYYY-Www.md`), `profile/schedule-constraints.md` (`active_mode`), active P0/priority requirements (`profile/`, funded `projects/*/index.md`), and at most 1 previous day's plan/log (if available).
+Do **NOT** summon any council subagents or `project-lead` here. Read ONLY the active Weekly plan (`plans/YYYY/weekly/YYYY-Www.md`), `profile/schedule-constraints.md` (`active_mode`), active P0/priority requirements (`profile/`, funded `projects/*/index.md`), and at most 1 previous day's plan/log (if available).
 - **Standalone Fallback**: If no active Weekly plan exists yet, derive today's priority-ordered timetable from `profile/` priorities using `parent_id: null`, and briefly offer `/weekly-plan` or `/strategy-review` when ready.
 
 ## Modes
@@ -37,5 +37,5 @@ Write `logs/YYYY-MM-DD-checkin.md` following `templates/logs/daily-checkin.md`, 
 
 When the user says an unexpected meeting, fatigue, or event disrupted today's schedule:
 1. Absorb the change inside today's 20% buffer first, then drop/defer the **lowest-priority (`PN` upward)** blocks from today's timetable so total scheduled time stays `≤ 100%`.
-2. **Never sacrifice P0 survival floors silently** to squeeze in delayed work—if rescheduling threatens P0, warn explicitly (`floors_ok: false`) and suggest dropping lower-priority blocks or running `/rebalance`.
+2. **Never sacrifice P0 survival floors silently** to squeeze in delayed work — if rescheduling threatens P0, warn explicitly (`floors_ok: false`) and suggest dropping lower-priority blocks or running `/strategy-review` (**Rebalance Mode**).
 3. Update `plans/YYYY/daily/YYYY-MM-DD.md` immediately and log the adjustment under `## Quick Notes / Ad-Hoc Changes`.
