@@ -1,15 +1,15 @@
 ---
 name: weekly-plan
-description: Tactical Planner for weekly reviews and weekly time-blocked plans. Runs fast with 0 subagent calls, checks floor compliance and consecutive missed-week escalation triggers, pulls Next Actions from active projects/*/index.md, and writes plans/YYYY/weekly/YYYY-Www.md.
+description: Tactical Planner for automated weekly plans (Sunday 20:30 auto-draft + daily rolling updates). Runs with 0 subagent calls, pulls Next Actions from active projects/*/index.md, checks escalation triggers, and writes plans/YYYY/weekly/YYYY-Www.md with check-ahead tasks for dashboard/.
 ---
 
-# Weekly Plan (Tactical Planner — Weekly)
+# Weekly Plan (Tactical Planner — Weekly Auto-Draft & Rolling Sync)
 
-Create or update the weekly time-blocked plan quickly using the active Monthly plan and reality constraints.
+Create or refresh the weekly time-blocked plan automatically with **0 subagent calls**, grounded in the approved Monthly strategy and real-world calendar constraints.
 
 ## Speed & Isolation Rule
 
-Do **NOT** summon any council subagents (`guardian`, `growth`, `world-radar`) or `project-lead` during normal `/weekly-plan` runs. Keep this workflow fast, lightweight, and grounded in the approved Monthly strategy.
+Do **NOT** summon any council subagents (`guardian`, `growth`, `world-radar`) or `project-lead` during normal `/weekly-plan` runs.
 
 ## Process
 
@@ -17,25 +17,26 @@ Do **NOT** summon any council subagents (`guardian`, `growth`, `world-radar`) or
 
 Read ONLY:
 - Active monthly plan: `plans/YYYY/monthly/YYYY-MM.md` *(if missing, run standalone using `profile/` priorities with `parent_id: null` and offer `/strategy-review` afterward)*
-- `profile/schedule-constraints.md` (apply `active_mode`: `semester` / `exam` / `vacation`)
+- `profile/schedule-constraints.md` (apply date-bounded fixed commitments & Google Calendar filtering rules — hide regular school lectures, include personal events + exams/assessments; read lecture list read-only only if explicitly planning exam scope)
 - `profile/vitality.md` (P0 floor only)
-- `## Next Actions` and `## Milestones` (lightweight status check only) from `projects/*/index.md` ONLY for projects with `status: "active"` *(never summon `project-lead` here; if an active project has no Next Actions listed or its current milestone is completed, show a 1-line notice at the top of the weekly plan — e.g., `"완료된 마일스톤이 있습니다 — /project-manage에서 다음 퀘스트·신상품 3안을 추천받을까요?"`)*
+- `## Next Actions` and `## Milestones` from `projects/*/index.md` ONLY for projects with `status: "active"` and `weekly_quota_hours > 0` *(never summon `project-lead` here; if an active project has no Next Actions or a completed milestone, add a 1-line note in `## Auto-Adjustment Log` suggesting `/project-manage`)*
 - At most 1 previous weekly plan (`plans/YYYY/weekly/YYYY-W<prev>.md`) and at most the last 7 daily check-in files from `logs/` (if present)
 
-### 2. Graceful Review & Escalation Check
+### 2. Carry-Over Triage & Escalation Check
 
-- If the user missed last week's review or several daily check-ins, **never scold**. Summarize what was recorded, ask 2–3 quick questions (what actually happened, energy level, next week's unusual fixed events), and triage carry-overs cleanly (do / defer / drop).
-- Check the **Escalation Thresholds**:
-  - Have core weekly targets missed for **2 consecutive weeks** (`consecutive_miss_weeks >= 2`)?
-  - Was a non-negotiable P0 floor breached (`floors_ok: false`)?
-  - Did the user ask to change Monthly/Quarterly/Yearly goals?
-- If any trigger fires, flag it clearly and offer to run `/strategy-review` (**Rebalance Mode**) before locking an unrealistic week.
+- Triage incomplete items from the previous week without scolding (`do` / `defer` / `drop`).
+- Check **Escalation Thresholds**:
+  - `P1` core targets physically cannot fit within the week (`needs_approval: true`)?
+  - Core weekly targets missed for **2 consecutive weeks** (`consecutive_miss_weeks >= 2`)?
+  - Non-negotiable P0 floor breached (`floors_ok: false`)?
+  - User explicitly requested changing Monthly/Quarterly/Yearly goals?
+- If any trigger fires, set `needs_approval: true`, write the exact shortfall/trigger in `## Auto-Adjustment Log`, and prompt for `/strategy-review` (**Rebalance Mode**).
 
-### 3. Draft & Confirm Weekly Time-Blocked Plan
+### 3. Write Weekly Plan With Dashboard-Ready Check-Ahead List
 
 Follow **Priority-Driven Zero-Sum Allocation (Hard 100% Cap)**:
-1. Pull requirements from active requirement files (`profile/`, active Monthly Priority Stack, and `## Next Actions` of funded `projects/*/index.md`) with 0 subagent calls.
-2. Lock **P0** first (fixed weekly commitments + survival sleep floor + ~20% daily buffer).
-3. Allocate remaining weekly hours strictly in **Priority Stack order (`P1 → P2 → ... → PN`)** into concrete day-level time blocks. **Total allocated hours MUST NOT exceed 100% of available capacity** — any overflow from lower-priority items is transparently deferred instead of overbooked.
+1. Lock **P0** first (date-bounded fixed commitments + personal/exam calendar blocks + survival sleep floor + ~20% daily buffer).
+2. Allocate remaining weekly hours strictly in **Priority Stack order (`P1 → P2 → ... → PN`)** into day-level blocks (`≤ 100%`). Auto-defer `P2–PN` overflow transparently; never silently drop `P1`.
+3. Populate `## Upcoming Tasks (Check Ahead)` with concise `- [ ] [Day MM/DD] [P#] ...` lines so the user can check off ahead-of-schedule tasks directly in `dashboard/` or Obsidian.
 
-Present the proposed week cleanly for quick user tweaks, then write `plans/YYYY/weekly/YYYY-Www.md` following `templates/plans/weekly.md` with valid YAML frontmatter (`id: "YYYY-Www"`, `parent_id: "YYYY-MM"`, `consecutive_miss_weeks`, `floors_ok`).
+Write `plans/YYYY/weekly/YYYY-Www.md` matching `templates/plans/weekly.md` with valid YAML frontmatter (`id`, `parent_id`, `consecutive_miss_weeks`, `floors_ok`, `needs_approval`).

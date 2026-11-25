@@ -1,4 +1,4 @@
-# Life Planner Architecture (4-Agent · 7-Skill)
+# Life Planner Architecture (4-Agent · 7-Skill · Local Dashboard)
 
 > Visual references: this Mermaid map (GitHub / IDE / Obsidian) and [ARCHITECTURE.canvas](ARCHITECTURE.canvas) (interactive Obsidian Canvas).
 
@@ -7,12 +7,14 @@
 ```mermaid
 flowchart LR
     U["Main Agent<br/>(Life Planner · AGENTS.md)"]
+    AUTO["06:00 Auto-Replan &amp;<br/>Sun 20:30 Weekly Cron"]
+    UI["Local Web Dashboard<br/>(dashboard/ · localhost)"]
 
     subgraph CORE["Core Planning Loop (4 Skills)"]
         direction TB
-        S_STRAT["/strategy-review<br/>전략 · Rebalance 모드"]
-        S_WEEK["/weekly-plan<br/>주간 타임블록 · 0 호출"]
-        S_DAY["/daily-plan<br/>일간 · 체크인 · 0 호출"]
+        S_STRAT["/strategy-review<br/>전략 · Rebalance (결재)"]
+        S_WEEK["/weekly-plan<br/>주간 자동 롤링 · 0 호출"]
+        S_DAY["/daily-plan<br/>일간 06:00 자동 · 0 호출"]
         S_PROJ["/project-manage<br/>자회사 프로젝트 위임"]
     end
 
@@ -36,23 +38,25 @@ flowchart LR
 
     subgraph DATA["Local Personal Data (.gitignore)"]
         direction TB
-        D_PROF["profile/<br/>7개 도메인·제약 파일"]
-        D_PLAN["plans/YYYY/<br/>연·분기·월·주·일 계획"]
+        D_PROF["profile/<br/>7개 도메인·기간별 고정일정"]
+        D_PLAN["plans/YYYY/<br/>연·분기·월·주·일 SSOT"]
         D_CNCL["council/<br/>위원회 의견·중재 아카이브"]
-        D_LOGS["logs/<br/>일일 3분 체크인"]
+        D_LOGS["logs/<br/>06:00 자동 아카이브 요약"]
         D_PROJ["projects/*/index.md<br/>프로젝트 SSOT · Next Actions"]
     end
 
+    GCAL["Google Calendar<br/>(Read-Only: 개인+시험)"]
     REMOTE["GitHub Remote<br/>(시스템 파일 전용)"]
 
     U --> S_STRAT & S_WEEK & S_DAY & S_PROJ
     U --> S_ONB & S_AUD & S_SYNC
+    AUTO ==>|"매일 06:00 / 일 20:30"| S_DAY & S_WEEK
 
     S_STRAT ==>|"병렬 소환 (Rebalance: 2인)"| A_GRD & A_GRW
     S_STRAT ==>|"전략 회의 병렬 소환"| A_RAD
     S_PROJ ==>|"단일 프로젝트 격리 호출"| A_PRJ
 
-    S_WEEK -.->|"2주 미달 / Floor 위반"| S_STRAT
+    S_DAY & S_WEEK -.->|"P1 충돌 / 2주 미달 / Floor 위반"| S_STRAT
 
     A_GRD -.-> D_PROF
     A_GRW -.-> D_PROF & D_PROJ
@@ -61,7 +65,10 @@ flowchart LR
 
     S_STRAT -.-> D_PLAN & D_CNCL & D_PROJ
     S_WEEK -.->|"에이전트 미호출 직접 연동"| D_PLAN & D_PROJ & D_LOGS
-    S_DAY -.-> D_PLAN & D_LOGS
+    S_DAY -.->|"체크·메모 읽기 → 재편성 & 아카이브"| D_PLAN & D_LOGS
+    S_DAY & S_WEEK -.->|"강의 숨김 / 시험만 필터"| GCAL
+
+    UI <==>|"체크[x]/[-], 미리완료, 예외메모 직접 동기화"| D_PLAN
     S_ONB -.-> D_PROF
     S_SYNC -.-> REMOTE
 ```
@@ -76,10 +83,16 @@ flowchart LR
 | `world-radar` | `.agents/agents/world-radar.md` | Targeted external signal via web search | `profile/world-radar.md` + `search_web` |
 | `project-lead` | `.agents/agents/project-lead.md` | Reusable playbook-driven project manager | Assigned `projects/<slug>/` folder only |
 
-### 2. Mediation & Zero-Sum Rule
-- **`guardian` vs. `growth` Mediation**: `guardian` protects floors and issues hard warnings; `growth` pushes high-leverage deliverables and ROI. The **Main Agent** mediates trade-offs impartially using `profile/north-star.md` and submits unresolved choices (2–3 scenarios) for user approval.
-- **Hard 100% Cap**: P0 (fixed obligations + survival/dignity floors + ~20% buffer) locks first; `P1 → PN` fills strictly within `≤ 100%` of time and budget.
+### 2. Autonomous Daily/Weekly Loop & Approval Boundary
+- **Daily & Weekly (Automated, 0 Subagent Calls)**:
+  - User interacts via `dashboard/` (`localhost`) to toggle `[x]` completed, `[-]` skipped, ahead-of-schedule weekly checkmarks, and one-line exception notes — writing directly to `plans/YYYY/*.md` (zero duplicate DB, 100% Obsidian-compatible).
+  - At **06:00 Asia/Seoul** (or Catch-up when PC wakes), Antigravity reads yesterday's checkmarks, ahead-of-schedule deductions, exception notes, and Google Calendar, auto-archives `logs/`, generates today's daily timetable, and rolls forward the active weekly plan.
+- **Auto-Defer vs. P1 Approval Boundary**:
+  - `P2–PN` overflow auto-defers transparently (2–3 lines in `## Auto-Adjustment Log`).
+  - `P1` (`[핵심]`) shortfall NEVER silently drops: sets `needs_approval: true` and raises a red Approval Banner in `dashboard/` for user decision (`/strategy-review` Rebalance Mode).
+- **No Global `exam` Mode**: High-intensity periods are expressed cleanly via date-bounded fixed commitments in `profile/schedule-constraints.md` and `weekly_quota_hours: 0` approved in `/strategy-review`.
+- **Read-Only School Calendar**: Never modifies or deletes external school calendar events; hides lectures from daily plans by default while allowing read-only lookup during exam planning.
 
-### 3. Single Source of Truth (SSOT) & Privacy
-- **`projects/<slug>/index.md` (SSOT)**: Holds `status`, `weekly_quota_hours`, `## Operating Rules & Constraints` (playbook), `## Milestones`, and `## Next Actions`. Holding Company (`/strategy-review`) sets quota; `project-lead` writes Next Actions; `/weekly-plan` reads Next Actions directly with **0 subagent calls**.
-- **Privacy Separation**: System files (`.agents/`, `AGENTS.md`, `ARCHITECTURE.*`, `templates/`, `README.md`) contain **zero** personal project names or private details and sync to GitHub. Personal folders (`profile/`, `plans/`, `logs/`, `council/`, `projects/`) stay strictly local via `.gitignore`.
+### 3. Privacy Separation
+- System files (`.agents/`, `AGENTS.md`, `ARCHITECTURE.*`, `dashboard/`, `templates/`, `README.md`) contain **zero** personal project names or private details and sync to GitHub.
+- Personal folders (`profile/`, `plans/`, `logs/`, `council/`, `projects/`) stay strictly local via `.gitignore`.

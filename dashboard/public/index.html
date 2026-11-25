@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Planner — Daily &amp; Weekly Checkboard</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --surface-2: #f0f2f7;
+      --border: #e2e6ef;
+      --text: #161a23;
+      --muted: #616b7e;
+      --primary: #4f46e5;
+      --primary-soft: rgba(79, 70, 229, 0.10);
+      --success: #059669;
+      --success-soft: rgba(5, 150, 105, 0.12);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.10);
+      --shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+    }
+    [data-theme="dark"] {
+      --bg: #0f1219;
+      --surface: #171c26;
+      --surface-2: #1f2634;
+      --border: #2a3345;
+      --text: #edf1f7;
+      --muted: #9aa5ba;
+      --primary: #818cf8;
+      --primary-soft: rgba(129, 140, 248, 0.16);
+      --success: #34d399;
+      --success-soft: rgba(52, 211, 153, 0.14);
+      --warning: #fbbf24;
+      --warning-soft: rgba(251, 191, 36, 0.14);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.15);
+      --shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Noto Sans KR", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 20px 104px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .pill.primary { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+    .pill.success { background: var(--success-soft); color: var(--success); border-color: transparent; }
+    .pill.warning { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
+    .pill.danger { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 6px 11px;
+      transition: all 140ms ease;
+    }
+    button:hover { border-color: var(--primary); }
+    button.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    button.primary:hover { opacity: 0.92; }
+    button.danger {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+      font-weight: 600;
+    }
+    button.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .banners { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .banner {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .banner.danger {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+    }
+    .banner.warning {
+      background: var(--warning-soft);
+      border-color: var(--warning);
+    }
+    .banner.info {
+      background: var(--primary-soft);
+      border-color: transparent;
+    }
+    .banner-title { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+    .banner ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .sub-filters { display: flex; gap: 6px; }
+    .sub-filters button { padding: 3px 9px; font-size: 12px; border-radius: 6px; }
+
+    .block-list { display: flex; flex-direction: column; gap: 8px; }
+    .block-card {
+      display: grid;
+      grid-template-columns: 98px 54px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: background 140ms ease, opacity 140ms ease;
+    }
+    .block-card.done {
+      background: var(--success-soft);
+      border-color: transparent;
+    }
+    .block-card.done .task-text { text-decoration: line-through; opacity: 0.72; }
+    .block-card.skipped {
+      background: var(--surface-2);
+      opacity: 0.58;
+    }
+    .block-card.skipped .task-text { text-decoration: line-through; }
+    .time-col {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .prio-badge {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .prio-badge.p0 { background: var(--surface-2); color: var(--muted); }
+    .prio-badge.p1 { background: var(--primary-soft); color: var(--primary); }
+    .prio-badge.p2 { background: var(--success-soft); color: var(--success); }
+    .prio-badge.p3 { background: var(--warning-soft); color: var(--warning); }
+    .core-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      margin-right: 6px;
+    }
+    .task-text { font-size: 13.5px; word-break: keep-all; }
+    .actions { display: flex; gap: 5px; }
+    .icon-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .icon-btn.done-active { background: var(--success); color: #fff; border-color: var(--success); }
+    .icon-btn.skip-active { background: var(--muted); color: #fff; border-color: var(--muted); }
+
+    .weekly-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 11px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .weekly-item.done {
+      background: var(--success-soft);
+      border-color: transparent;
+    }
+    .weekly-item.done .weekly-text { text-decoration: line-through; opacity: 0.72; }
+    .weekly-meta { display: flex; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .tag.ahead { background: var(--success-soft); color: var(--success); }
+
+    .add-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    input[type="text"], select {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+    input[type="text"]:focus, select:focus {
+      outline: 2px solid var(--primary-soft);
+      border-color: var(--primary);
+    }
+
+    details {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+    summary {
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .mini-table th, .mini-table td {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mini-table th { color: var(--muted); font-weight: 600; }
+
+    /* Bottom Floating Exception Note Bar */
+    .note-dock {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 20px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+      z-index: 20;
+    }
+    .note-dock-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .note-dock-inner input { flex: 1; min-width: 240px; }
+
+    .notes-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .note-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      font-size: 12.5px;
+    }
+    .note-del {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+    .note-del:hover { color: var(--danger); }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      right: 18px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: all 180ms ease;
+      z-index: 50;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .empty { color: var(--muted); font-size: 13px; padding: 14px 4px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Life Planner</h1>
+        <span id="date-badge" class="pill primary">Loading...</span>
+        <span id="progress-badge" class="pill success">0%</span>
+        <span id="week-badge" class="pill">W--</span>
+      </div>
+      <div class="controls">
+        <button id="btn-prev" title="어제">← 어제</button>
+        <button id="btn-today">오늘</button>
+        <button id="btn-next" title="내일">내일 →</button>
+        <button id="btn-school">학교 일정 참고</button>
+        <button id="btn-refresh" title="파일 다시 읽기">새로고침</button>
+        <button id="btn-theme" title="테마 전환">테마</button>
+      </div>
+    </header>
+
+    <div id="banners" class="banners"></div>
+
+    <!-- School Calendar Read-Only Reference Drawer -->
+    <div id="school-panel" class="panel" style="display:none; margin-bottom:16px;">
+      <div class="panel-head">
+        <h2>학교 캘린더 · 고정 일정 참고 (읽기 전용 · 원본 보존)</h2>
+        <button id="btn-copy-exam-prompt" class="primary">시험 범위 강의 목록 조회 프롬프트 복사</button>
+      </div>
+      <div id="school-content"></div>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Today's Timetable -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 id="daily-title">오늘 타임블록</h2>
+          <div class="sub-filters">
+            <button data-filter="all" class="active">전체</button>
+            <button data-filter="pending">미완료</button>
+            <button data-filter="core">핵심</button>
+          </div>
+        </div>
+        <div id="daily-list" class="block-list"></div>
+
+        <details id="deferred-box" style="display:none;">
+          <summary>자동 보류 / 이월된 하위 항목 (Deferred)</summary>
+          <ul id="deferred-list" style="margin:8px 0 0; padding-left:18px; font-size:13px; color:var(--muted);"></ul>
+        </details>
+
+        <div id="notes-section" style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12.5px; font-weight:700; color:var(--muted);">오늘 기록된 예외 변경 메모 (다음 06:00 자동 반영)</span>
+            <button id="btn-copy-reschedule" style="padding:3px 9px; font-size:12px;">지금 바로 반영 프롬프트 복사</button>
+          </div>
+          <div id="notes-list" class="notes-list"></div>
+        </div>
+      </section>
+
+      <!-- Right: This Week's Remaining Tasks (Check Ahead) -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 id="weekly-title">이번 주 남은 할 일 (미리 완료 체크)</h2>
+          <span class="pill">체크 시 다음 06:00 자동 차감</span>
+        </div>
+        <div id="weekly-list" class="block-list"></div>
+
+        <form id="add-weekly-form" class="add-row">
+          <select id="add-day" aria-label="요일">
+            <option value="Week">이번 주</option>
+            <option value="Mon">월</option>
+            <option value="Tue">화</option>
+            <option value="Wed">수</option>
+            <option value="Thu">목</option>
+            <option value="Fri">금</option>
+            <option value="Sat">토</option>
+            <option value="Sun">일</option>
+          </select>
+          <select id="add-prio" aria-label="우선순위">
+            <option value="P1">P1</option>
+            <option value="P2" selected>P2</option>
+            <option value="P3">P3</option>
+          </select>
+          <input id="add-text" type="text" placeholder="주간 할 일 빠르게 추가..." style="flex:1; min-width:140px;" />
+          <button type="submit">추가</button>
+        </form>
+
+        <details id="weekly-table-box">
+          <summary>이번 주 요일별 배정 요약 보기</summary>
+          <table class="mini-table">
+            <thead>
+              <tr><th>요일</th><th>테마</th><th>핵심 블록</th></tr>
+            </thead>
+            <tbody id="weekly-table-body"></tbody>
+          </table>
+        </details>
+      </section>
+    </div>
+  </div>
+
+  <!-- Bottom Floating Exception Note Bar -->
+  <form id="note-form" class="note-dock">
+    <div class="note-dock-inner">
+      <strong style="font-size:13px; white-space:nowrap;">예외 변경 메모</strong>
+      <input id="note-input" type="text" placeholder="갑작스러운 약속·컨디션·일정 변경 입력 (예: 내일 15:00 약속 추가, 오늘 저녁 비워줘)" />
+      <button type="submit" class="primary">메모 저장</button>
+    </div>
+  </form>
+
+  <div id="toast" class="toast">저장되었습니다</div>
+
+  <script>
+    let state = null;
+    let selectedDate = null;
+    let dailyFilter = 'all';
+    let showSchool = false;
+
+    const savedTheme = localStorage.getItem('lp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.remove('show'), 2100);
+    }
+
+    async function copyPrompt(text, label) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(`${label} 복사됨 — Antigravity 채팅에 붙여넣으세요`);
+      } catch {
+        prompt('아래 프롬프트를 복사해서 Antigravity 채팅에 붙여넣으세요:', text);
+      }
+    }
+
+    function shiftDate(dateStr, delta) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d + delta));
+      return dt.toISOString().slice(0, 10);
+    }
+
+    function formatKoreanDay(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const names = ['일', '월', '화', '수', '목', '금', '토'];
+      const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+      return `${dateStr} (${names[dow]})`;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function formatInlineMd(s) {
+      return escapeHtml(s)
+        .replace(/\[핵심\]\s*/g, '<span class="core-tag">핵심</span>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em style="color:var(--muted)">$1</em>');
+    }
+
+    async function api(path, options) {
+      const res = await fetch(path, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function loadState(dateStr) {
+      const qs = dateStr ? `?date=${encodeURIComponent(dateStr)}` : '';
+      state = await api(`/api/state${qs}`);
+      selectedDate = state.selectedDate;
+      render();
+    }
+
+    function renderBanners() {
+      const box = document.getElementById('banners');
+      box.innerHTML = '';
+
+      const needsApproval = (state.daily.exists && state.daily.meta.needs_approval) ||
+                            (state.weekly.exists && state.weekly.meta.needs_approval);
+      const floorBreach = (state.daily.exists && !state.daily.meta.floors_ok) ||
+                          (state.weekly.exists && !state.weekly.meta.floors_ok);
+
+      if (needsApproval || floorBreach) {
+        const div = document.createElement('div');
+        div.className = 'banner danger';
+        const reasons = [
+          ...(state.daily.autoLog || []),
+          ...(state.weekly.autoLog || [])
+        ];
+        div.innerHTML = `
+          <div>
+            <div class="banner-title">🚨 핵심 목표(P1) 용량 충돌 또는 P0 하한선 경고 — 결재가 필요합니다</div>
+            <div style="font-size:13px;">AI가 P1 핵심 목표를 임의로 포기하지 않고 보류해 두었습니다. 무엇을 순연/포기할지 선택해 주세요.</div>
+            ${reasons.length ? `<ul>${reasons.map(r => `<li>${formatInlineMd(r)}</li>`).join('')}</ul>` : ''}
+          </div>
+          <button class="danger" id="btn-approval-prompt">결재 프롬프트 복사 (/strategy-review)</button>
+        `;
+        box.appendChild(div);
+        div.querySelector('#btn-approval-prompt').onclick = () => copyPrompt(
+          `/strategy-review Rebalance 모드로 이번 주(${state.weekId}) P1 용량 부족/충돌을 조정해줘. 무엇을 포기하거나 순연할지 2~3안으로 올려줘.`,
+          '결재 프롬프트'
+        );
+      }
+
+      if (!state.daily.exists) {
+        const div = document.createElement('div');
+        div.className = 'banner warning';
+        div.innerHTML = `
+          <div>
+            <div class="banner-title">⏰ ${formatKoreanDay(state.selectedDate)} 데일리 계획표가 아직 없습니다 (Catch-up)</div>
+            <div style="font-size:13px;">아침 06:00에 노트북이 꺼져 있었거나 아직 생성 전입니다. 아래 버튼으로 바로 오늘 시간표를 생성할 수 있습니다.</div>
+          </div>
+          <button class="primary" id="btn-catchup-prompt">오늘 자동 재편성 프롬프트 복사</button>
+        `;
+        box.appendChild(div);
+        div.querySelector('#btn-catchup-prompt').onclick = () => copyPrompt(
+          `/daily-plan ${state.selectedDate} 자동 재편성 실행해줘 (어제 체크결과·주간 미리완료·예외메모·구글캘린더 반영해서 오늘 데일리 생성하고 주간표도 롤링 업데이트).`,
+          '자동 재편성 프롬프트'
+        );
+      }
+
+      const logs = state.daily.exists ? (state.daily.autoLog || []) : [];
+      if (logs.length && !needsApproval) {
+        const div = document.createElement('div');
+        div.className = 'banner info';
+        div.innerHTML = `
+          <div>
+            <div class="banner-title">🔄 06:00 자동 조정 내역 (P2–PN 투명 고지)</div>
+            <ul>${logs.map(l => `<li>${formatInlineMd(l)}</li>`).join('')}</ul>
+          </div>
+        `;
+        box.appendChild(div);
+      }
+    }
+
+    function renderSchoolPanel() {
+      const panel = document.getElementById('school-panel');
+      panel.style.display = showSchool ? 'block' : 'none';
+      document.getElementById('btn-school').classList.toggle('active', showSchool);
+      if (!showSchool) return;
+
+      const { events, rules } = state.scheduleRef || { events: [], rules: [] };
+      const html = `
+        ${rules.length ? `<ul style="margin:0 0 10px; padding-left:18px; font-size:13px; color:var(--muted);">${rules.map(r => `<li>${formatInlineMd(r)}</li>`).join('')}</ul>` : ''}
+        ${events.length ? `
+          <table class="mini-table">
+            <thead><tr><th>일시</th><th>고정 일정 / 시험</th><th>비고</th></tr></thead>
+            <tbody>${events.map(e => `<tr><td>${escapeHtml(e.date)}</td><td><strong>${escapeHtml(e.event)}</strong></td><td>${formatInlineMd(e.notes)}</td></tr>`).join('')}</tbody>
+          </table>
+        ` : '<div class="empty">등록된 다가오는 고정 일정이 없습니다.</div>'}
+      `;
+      document.getElementById('school-content').innerHTML = html;
+    }
+
+    function renderDaily() {
+      const list = document.getElementById('daily-list');
+      const titleEl = document.getElementById('daily-title');
+      const deferredBox = document.getElementById('deferred-box');
+      const deferredList = document.getElementById('deferred-list');
+      const notesList = document.getElementById('notes-list');
+
+      if (!state.daily.exists) {
+        titleEl.textContent = `${formatKoreanDay(state.selectedDate)} 타임블록`;
+        list.innerHTML = '<div class="empty">아직 생성된 데일리 계획표가 없습니다. 상단 Catch-up 버튼으로 생성하거나 다른 날짜를 선택해 보세요.</div>';
+        deferredBox.style.display = 'none';
+        notesList.innerHTML = '<div class="empty" style="padding:6px;">데일리 파일 생성 후 메모를 남길 수 있습니다.</div>';
+        return;
+      }
+
+      titleEl.textContent = state.daily.title;
+      const blocks = state.daily.blocks.filter(b => {
+        if (dailyFilter === 'pending') return b.status === 'pending';
+        if (dailyFilter === 'core') return b.core || b.priority === 'P1';
+        return true;
+      });
+
+      if (!blocks.length) {
+        list.innerHTML = '<div class="empty">표시할 블록이 없습니다.</div>';
+      } else {
+        list.innerHTML = '';
+        blocks.forEach(b => {
+          const prioKey = /^P0/i.test(b.priority) ? 'p0' : /^P1/i.test(b.priority) ? 'p1' : /^P2/i.test(b.priority) ? 'p2' : 'p3';
+          const card = document.createElement('div');
+          card.className = `block-card ${b.status}`;
+          card.innerHTML = `
+            <div class="time-col">${escapeHtml(b.time)}</div>
+            <div class="prio-badge ${prioKey}">${escapeHtml(b.priority)}</div>
+            <div class="task-text">${formatInlineMd(b.task)}</div>
+            <div class="actions">
+              <button class="icon-btn ${b.status === 'done' ? 'done-active' : ''}" data-act="done" title="완료">✓</button>
+              <button class="icon-btn ${b.status === 'skipped' ? 'skip-active' : ''}" data-act="skipped" title="건너뜀">✕</button>
+            </div>
+          `;
+          card.querySelectorAll('button').forEach(btn => {
+            btn.onclick = async () => {
+              const act = btn.dataset.act;
+              const nextStatus = b.status === act ? 'pending' : act;
+              try {
+                state = await api('/api/daily/toggle', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ date: state.selectedDate, index: b.index, status: nextStatus })
+                });
+                render();
+                showToast(nextStatus === 'done' ? '완료 체크됨' : nextStatus === 'skipped' ? '건너뜀 표시됨' : '대기 상태로 복원됨');
+              } catch (err) {
+                showToast(`오류: ${err.message}`);
+              }
+            };
+          });
+          list.appendChild(card);
+        });
+      }
+
+      if (state.daily.deferred && state.daily.deferred.length) {
+        deferredBox.style.display = 'block';
+        deferredList.innerHTML = state.daily.deferred.map(d => `<li>${formatInlineMd(d)}</li>`).join('');
+      } else {
+        deferredBox.style.display = 'none';
+      }
+
+      if (state.daily.notes && state.daily.notes.length) {
+        notesList.innerHTML = '';
+        state.daily.notes.forEach(n => {
+          const chip = document.createElement('div');
+          chip.className = 'note-chip';
+          chip.innerHTML = `<span>${formatInlineMd(n.text)}</span><button class="note-del" title="삭제">×</button>`;
+          chip.querySelector('.note-del').onclick = async () => {
+            try {
+              state = await api('/api/daily/note/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: state.selectedDate, index: n.index })
+              });
+              render();
+              showToast('메모 삭제됨');
+            } catch (err) { showToast(`오류: ${err.message}`); }
+          };
+          notesList.appendChild(chip);
+        });
+      } else {
+        notesList.innerHTML = '<div style="font-size:12px; color:var(--muted); padding:4px 0;">아직 기록된 예외 변경 메모가 없습니다.</div>';
+      }
+    }
+
+    function renderWeekly() {
+      const list = document.getElementById('weekly-list');
+      const titleEl = document.getElementById('weekly-title');
+      const tbody = document.getElementById('weekly-table-body');
+
+      if (!state.weekly.exists) {
+        titleEl.textContent = `${state.weekId} 주간 할 일`;
+        list.innerHTML = '<div class="empty">활성 주간 계획 파일이 아직 없습니다.</div>';
+        tbody.innerHTML = '';
+        return;
+      }
+
+      titleEl.textContent = `${state.weekId} 남은 할 일 (미리 완료 체크)`;
+      if (!state.weekly.tasks.length) {
+        list.innerHTML = '<div class="empty">등록된 주간 체크 항목이 없습니다. 아래에서 추가하거나 다음 주간 계획에서 자동 생성됩니다.</div>';
+      } else {
+        list.innerHTML = '';
+        state.weekly.tasks.forEach(t => {
+          const row = document.createElement('div');
+          row.className = `weekly-item ${t.status}`;
+          row.innerHTML = `
+            <div style="flex:1;">
+              <div class="weekly-meta">
+                ${t.dayTag ? `<span class="tag">${escapeHtml(t.dayTag)}</span>` : ''}
+                ${t.priority ? `<span class="tag">${escapeHtml(t.priority)}</span>` : ''}
+                ${t.status === 'done' ? '<span class="tag ahead">완료/미리완료</span>' : ''}
+              </div>
+              <div class="weekly-text">${formatInlineMd(t.text)}</div>
+            </div>
+            <button class="icon-btn ${t.status === 'done' ? 'done-active' : ''}">${t.status === 'done' ? '완료 ✓' : '미리 완료'}</button>
+          `;
+          row.querySelector('button').onclick = async () => {
+            const nextStatus = t.status === 'done' ? 'pending' : 'done';
+            try {
+              state = await api('/api/weekly/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ weekId: state.weekId, date: state.selectedDate, index: t.index, status: nextStatus })
+              });
+              render();
+              showToast(nextStatus === 'done' ? '미리 완료 체크됨 (다음 06:00 자동 차감)' : '체크 해제됨');
+            } catch (err) { showToast(`오류: ${err.message}`); }
+          };
+          list.appendChild(row);
+        });
+      }
+
+      tbody.innerHTML = (state.weekly.daySchedule || []).map(d => `
+        <tr>
+          <td style="white-space:nowrap;"><strong>${escapeHtml(d.day)}</strong></td>
+          <td>${formatInlineMd(d.theme)}</td>
+          <td>${formatInlineMd(d.blocks)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function render() {
+      document.getElementById('date-badge').textContent = formatKoreanDay(state.selectedDate) + (state.selectedDate === state.today ? ' · 오늘' : '');
+      document.getElementById('week-badge').textContent = state.weekId;
+      const pct = state.daily.exists ? state.daily.computedProgress : 0;
+      document.getElementById('progress-badge').textContent = `오늘 ${pct}%`;
+
+      renderBanners();
+      renderSchoolPanel();
+      renderDaily();
+      renderWeekly();
+    }
+
+    // Event bindings
+    document.getElementById('btn-prev').onclick = () => loadState(shiftDate(selectedDate, -1));
+    document.getElementById('btn-next').onclick = () => loadState(shiftDate(selectedDate, 1));
+    document.getElementById('btn-today').onclick = () => loadState(state ? state.today : null);
+    document.getElementById('btn-refresh').onclick = () => loadState(selectedDate).then(() => showToast('최신 마크다운 다시 읽음'));
+    document.getElementById('btn-school').onclick = () => { showSchool = !showSchool; renderSchoolPanel(); };
+    document.getElementById('btn-theme').onclick = () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('lp-theme', next);
+    };
+
+    document.querySelectorAll('.sub-filters button').forEach(btn => {
+      btn.onclick = () => {
+        dailyFilter = btn.dataset.filter;
+        document.querySelectorAll('.sub-filters button').forEach(b => b.classList.toggle('active', b === btn));
+        renderDaily();
+      };
+    });
+
+    document.getElementById('btn-copy-exam-prompt').onclick = () => copyPrompt(
+      '학교 구글 캘린더(읽기 전용)에서 이번 시험 범위 강의 목록을 불러와서 시험 대비 회독 계획에 참고해줘. (원본 캘린더는 절대 수정하지 말 것)',
+      '시험 강의 조회 프롬프트'
+    );
+
+    document.getElementById('btn-copy-reschedule').onclick = () => copyPrompt(
+      `/daily-plan ${state.selectedDate}에 기록한 Quick Notes 예외 변경사항을 지금 바로 반영해서 오늘 시간표를 다시 짜줘.`,
+      '즉시 반영 프롬프트'
+    );
+
+    document.getElementById('note-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('note-input');
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        state = await api('/api/daily/note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date: state.selectedDate, text })
+        });
+        input.value = '';
+        render();
+        showToast('예외 변경 메모 저장됨 (다음 06:00 자동 반영)');
+      } catch (err) { showToast(`오류: ${err.message}`); }
+    };
+
+    document.getElementById('add-weekly-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('add-text');
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        state = await api('/api/weekly/task/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            weekId: state.weekId,
+            date: state.selectedDate,
+            dayTag: document.getElementById('add-day').value,
+            priority: document.getElementById('add-prio').value,
+            text
+          })
+        });
+        input.value = '';
+        render();
+        showToast('주간 할 일 추가됨');
+      } catch (err) { showToast(`오류: ${err.message}`); }
+    };
+
+    loadState();
+  </script>
+</body>
+</html>

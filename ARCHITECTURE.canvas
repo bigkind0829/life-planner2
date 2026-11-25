@@ -55,10 +55,30 @@
       "type": "file",
       "file": "AGENTS.md",
       "x": 0,
-      "y": 240,
+      "y": 140,
       "width": 250,
-      "height": 150,
+      "height": 140,
       "color": "5"
+    },
+    {
+      "id": "node-auto",
+      "type": "text",
+      "text": "### 06:00 Auto-Replan\n- 매일 06:00 데일리+주간 롤링 재편성\n- 일 20:30 다음 주 자동 초안\n- `P2–PN` 자동 보류 / `P1`만 결재 배너",
+      "x": 0,
+      "y": 320,
+      "width": 250,
+      "height": 145,
+      "color": "4"
+    },
+    {
+      "id": "node-dashboard",
+      "type": "file",
+      "file": "dashboard/README.md",
+      "x": 760,
+      "y": 570,
+      "width": 320,
+      "height": 135,
+      "color": "4"
     },
     {
       "id": "node-strategy",
@@ -173,7 +193,7 @@
     {
       "id": "data-profile",
       "type": "text",
-      "text": "### `profile/`\n7개 도메인·제약 프로필\n- `guardian`: north-star, vitality, connection-joy\n- `growth`: mastery, wealth\n- `world-radar`: world-radar",
+      "text": "### `profile/`\n7개 도메인·기간별 고정 일정\n- `exam` 모드 폐지 (Zero-Sum 할당 통일)\n- 학교 캘린더 원본 보존 / 읽기 전용",
       "x": 1205,
       "y": 20,
       "width": 250,
@@ -183,11 +203,11 @@
     {
       "id": "data-plans",
       "type": "text",
-      "text": "### `plans/YYYY/`\n계층형 계획 문서\n- yearly → quarterly → monthly → weekly → daily",
+      "text": "### `plans/YYYY/`\n계층형 계획 SSOT\n- `dashboard/` & Obsidian 직접 공유\n- 체크 `[x]`/`[-]`, 미리 완료, 예외 메모",
       "x": 1205,
       "y": 155,
       "width": 250,
-      "height": 95,
+      "height": 100,
       "color": "4"
     },
     {
@@ -195,9 +215,9 @@
       "type": "text",
       "text": "### `council/`\n전략 회의 · Rebalance 의견 및 중재 아카이브",
       "x": 1205,
-      "y": 270,
+      "y": 275,
       "width": 250,
-      "height": 85,
+      "height": 80,
       "color": "4"
     },
     {
@@ -213,7 +233,7 @@
     {
       "id": "data-logs",
       "type": "text",
-      "text": "### `logs/`\n일일 3분 체크인 (주간 계획이 최근 7일 참조)",
+      "text": "### `logs/`\n매일 06:00 자동 아카이브 요약 (저녁 체크인 대화 폐지)",
       "x": 1205,
       "y": 520,
       "width": 250,
@@ -223,11 +243,11 @@
     {
       "id": "data-github",
       "type": "text",
-      "text": "### GitHub Remote\n시스템 파일 전용 백업\n(`.agents/`, `AGENTS.md`, `ARCHITECTURE.*`, `templates/`)\n개인 데이터 **0%**",
+      "text": "### GitHub Remote\n시스템 파일 전용 백업\n(`.agents/`, `AGENTS.md`, `ARCHITECTURE.*`, `dashboard/`, `templates/`)\n개인 데이터 **0%**",
       "x": 1180,
       "y": 690,
       "width": 300,
-      "height": 130,
+      "height": 135,
       "color": "6"
     }
   ],
@@ -239,20 +259,21 @@
     { "id": "e-main-onb", "fromNode": "node-main", "fromSide": "right", "toNode": "node-onboard", "toSide": "left" },
     { "id": "e-main-aud", "fromNode": "node-main", "fromSide": "right", "toNode": "node-audit", "toSide": "left" },
     { "id": "e-main-sync", "fromNode": "node-main", "fromSide": "right", "toNode": "node-sync", "toSide": "left" },
+    { "id": "e-auto-day", "fromNode": "node-auto", "fromSide": "right", "toNode": "node-daily", "toSide": "left", "color": "4", "label": "06:00 자동" },
+    { "id": "e-auto-week", "fromNode": "node-auto", "fromSide": "right", "toNode": "node-weekly", "toSide": "left", "color": "4", "label": "일 20:30" },
     { "id": "e-strat-grd", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-guardian", "toSide": "left", "color": "1", "label": "invoke" },
     { "id": "e-strat-grw", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-growth", "toSide": "left", "color": "2", "label": "invoke" },
     { "id": "e-strat-rad", "fromNode": "node-strategy", "fromSide": "right", "toNode": "node-radar", "toSide": "left", "color": "5", "label": "invoke (전략)" },
-    { "id": "e-week-escalate", "fromNode": "node-weekly", "fromSide": "top", "toNode": "node-strategy", "toSide": "bottom", "color": "2", "label": "에스컬레이션" },
+    { "id": "e-week-escalate", "fromNode": "node-weekly", "fromSide": "top", "toNode": "node-strategy", "toSide": "bottom", "color": "2", "label": "P1 충돌 / 에스컬레이션" },
     { "id": "e-proj-lead", "fromNode": "node-proj-skill", "fromSide": "right", "toNode": "node-proj-lead", "toSide": "left", "color": "3", "label": "invoke (격리)" },
     { "id": "e-grd-prof", "fromNode": "node-guardian", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
     { "id": "e-grw-prof", "fromNode": "node-growth", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
     { "id": "e-grw-proj", "fromNode": "node-growth", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "3", "label": "요약 스캔" },
     { "id": "e-rad-prof", "fromNode": "node-radar", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
     { "id": "e-lead-proj", "fromNode": "node-proj-lead", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "3", "label": "Playbook / Next Actions" },
+    { "id": "e-dash-plans", "fromNode": "node-dashboard", "fromSide": "right", "toNode": "data-plans", "toSide": "left", "color": "4", "label": "체크·메모 직접 동기화" },
     { "id": "e-week-proj", "fromNode": "node-weekly", "fromSide": "right", "toNode": "data-projects", "toSide": "left", "color": "4", "label": "Next Actions 직접 읽기" },
-    { "id": "e-week-plans", "fromNode": "node-weekly", "fromSide": "right", "toNode": "data-plans", "toSide": "left", "color": "4" },
-    { "id": "e-day-logs", "fromNode": "node-daily", "fromSide": "right", "toNode": "data-logs", "toSide": "left", "color": "4" },
-    { "id": "e-onb-prof", "fromNode": "node-onboard", "fromSide": "right", "toNode": "data-profile", "toSide": "left", "color": "4" },
+    { "id": "e-day-logs", "fromNode": "node-daily", "fromSide": "right", "toNode": "data-logs", "toSide": "left", "color": "4", "label": "06:00 자동 아카이브" },
     { "id": "e-sync-git", "fromNode": "node-sync", "fromSide": "right", "toNode": "data-github", "toSide": "left", "color": "6", "label": "시스템 전용 Push" }
   ]
 }
