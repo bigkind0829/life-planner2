@@ -516,6 +516,16 @@
           </table>
 
           <details open>
+            <summary>월별 재산 추이 (Monthly Snapshot History)</summary>
+            <table class="mini-table">
+              <thead>
+                <tr><th>월</th><th>현금</th><th>수입</th><th>지출</th><th>투자풀</th><th>부채</th><th>순흐름</th></tr>
+              </thead>
+              <tbody id="wealth-history-body"></tbody>
+            </table>
+          </details>
+
+          <details>
             <summary>재산 목표 &amp; 핵심 마일스톤 (profile/wealth.md)</summary>
             <ul id="wealth-goals-list" style="margin:8px 0 0; padding-left:18px; font-size:13px;"></ul>
           </details>
@@ -901,6 +911,20 @@
           <td style="color:var(--success);">${formatKrw(t.totalTargetIncomeKrw)}</td>
         </tr>
       `;
+
+      document.getElementById('wealth-history-body').innerHTML = (w.history && w.history.length)
+        ? w.history.map(h => `
+            <tr>
+              <td><strong>${escapeHtml(h.month)}</strong></td>
+              <td>${formatKrw(h.liquid)}</td>
+              <td>${formatKrw(h.income)}</td>
+              <td>${formatKrw(h.expense)}</td>
+              <td>${formatKrw(h.investable)}</td>
+              <td>${formatKrw(h.debt)}</td>
+              <td style="color:${h.net >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600;">${h.net > 0 ? '+' : ''}${formatKrw(h.net)}</td>
+            </tr>
+          `).join('')
+        : '<tr><td colspan="7" class="empty">아직 월별 스냅샷 기록이 없습니다. 왼쪽에서 저장하면 자동 기록됩니다.</td></tr>';
 
       document.getElementById('wealth-goals-list').innerHTML = (w.goals || []).map(g => `<li>${formatInlineMd(g)}</li>`).join('') || '<li class="empty">등록된 재산 목표가 없습니다.</li>';
     }

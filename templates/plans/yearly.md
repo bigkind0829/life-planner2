@@ -17,39 +17,41 @@ floors_ok: true
 updated_at: "YYYY-MM-DD"
 ---
 
-# YYYY Yearly Life Plan (4-Part Executive Approval Sheet)
+# YYYY Yearly Life Plan (Annual Settlement & Strategic Direction)
 
-## North Star Theme
+## North Star Theme & Refresh
 
-- One-sentence theme for the year grounded in core values.
+- **Yearly Theme**: One-sentence theme grounded in refreshed `profile/north-star.md` values.
+- **Values Refresh Check**: Confirmed unchanged / updated (`YYYY-MM-DD`).
 
-## 1. 지난 해 실적 (Prior Year Results)
+## 1. 지난 해 연간 결산 (Annual P&L, Debt & Compounding Assets)
 
-- Key achievements, lessons, and P0 floor health from the prior year.
+- **Annual Financial Settlement** *(from `profile/wealth.md` Monthly Snapshot History)*: Start vs. End `liquid_cash`, `investable_pool`, `total_debt` delta, and average monthly cashflow.
+- **Core Competency & Compounding Assets Built**: Durable skills, credentials, content/audience, systems, network, or cashflow engines created.
 
-## 2. 우선순위 조정 (Annual Priority Stack: P0 + P1~PN)
+## 2. Stop-Doing List (공식 폐기 목록)
 
-- **P0 (Non-Negotiable Survival Floors)**: e.g., 7h+ sleep, fixed obligations, ~20% buffer
-- **P1**:
-- **P2**:
-- **P3**:
+> Retire low-ROI drains BEFORE allocating next year's Time & Capital.
 
-## 3. 연간 목표 & 신사업·퀘스트 방향 (Annual Objectives)
+- Dropped habit / recurring drain / retired project 1 — *Reason*
 
-1. **[P1]** Objective — *Measurable outcome*
-2. **[P2]** Objective — *Measurable outcome*
-3. **[P3]** Objective — *Measurable outcome*
+## 3. 연간 우선순위 & 대목표 (P0 + P1~PN)
 
-## 4. 연간 시간·돈 결재 방향 (Zero-Sum Hard 100% Cap)
+- **P0 (Non-Negotiable Survival Floors)**: Sleep, exercise, fixed obligations, ~20% buffer, essential living/debt floors
+1. **[P1]** Annual Objective — *Measurable outcome*
+2. **[P2]** Annual Objective — *Measurable outcome*
+3. **[P3]** Annual Objective — *Measurable outcome*
 
-| Priority | Domain / Subsidiary | Target Role / Quota | Budget Guardrail | Status |
+## 4. 연간 시간·돈 결재 방향 (Symmetric Zero-Sum ≤ 100% Cap)
+
+| Priority | Domain / Project | Target Weekly Role | Capital / Budget Guardrail | Status |
 | :---: | :--- | :--- | :--- | :---: |
-| **P0** | Fixed + Survival + 20% Buffer | Locked base | Essential living | Locked |
+| **P0** | Fixed + Survival + 20% Buffer | Locked base | Essential living & debt | Locked |
 | **P1** | | | | Approved |
 | **P2** | | | | Approved |
 | *Overflow* | *(Deferred / Queued)* | 0h | 0 | Queued |
 
-## Quarterly Roadmap
+## Quarterly Roadmap (Big Rocks)
 
 - **Q1**: Primary focus
 - **Q2**: Primary focus

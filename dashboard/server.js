@@ -341,6 +341,25 @@ function parseWealth() {
     if (drafts.length) latestDraft = drafts[0];
   }
 
+  const histSec = extractSection(content, '## Monthly Snapshot History');
+  const history = [];
+  if (histSec.found) {
+    for (const line of histSec.lines) {
+      if (!line.trim().startsWith('|')) continue;
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+      if (cells.length < 7 || /^:?-+:?$/.test(cells[0]) || /^month$/i.test(cells[0])) continue;
+      history.push({
+        month: cells[0],
+        liquid: Number(cells[1]) || 0,
+        income: Number(cells[2]) || 0,
+        expense: Number(cells[3]) || 0,
+        investable: Number(cells[4]) || 0,
+        debt: Number(cells[5]) || 0,
+        net: Number(cells[6]) || 0
+      });
+    }
+  }
+
   return {
     exists: true,
     updatedAt: meta.updated_at || '',
@@ -352,6 +371,7 @@ function parseWealth() {
     investable_pool_krw: investable,
     floors: cleanBullets(extractSection(content, '## Non-Negotiable Floor').lines),
     goals: cleanBullets(extractSection(content, '## Goals & Priorities').lines),
+    history,
     latestMonthlyDraft: latestDraft
   };
 }
@@ -564,6 +584,36 @@ function updateWealthSnapshot(body) {
     } else {
       content += `${eol}${eol}## Notes & History${eol}${eol}${entry}`;
     }
+  }
+
+  // Auto-upsert current YYYY-MM row in Monthly Snapshot History
+  const { meta: merged } = parseFrontmatter(content);
+  const ym = getSeoulToday().slice(0, 7);
+  const liq = Number(merged.liquid_cash_krw || 0);
+  const inc = Number(merged.monthly_income_krw || 0);
+  const exp = Number(merged.monthly_expense_krw || 0);
+  const inv = Number(merged.investable_pool_krw || 0);
+  const dbt = Number(merged.total_debt_krw || 0);
+  const rowStr = `| ${ym} | ${liq} | ${inc} | ${exp} | ${inv} | ${dbt} | ${inc - exp} |`;
+  const hLines = content.split(/\r?\n/);
+  const hSec = extractSection(content, '## Monthly Snapshot History');
+  if (hSec.found) {
+    let replaced = false;
+    for (let i = hSec.start; i < hSec.end; i++) {
+      if (hLines[i].trim().startsWith(`| ${ym} |`)) {
+        hLines[i] = rowStr;
+        replaced = true;
+        break;
+      }
+    }
+    if (!replaced) {
+      let insertAt = hSec.end;
+      while (insertAt > hSec.start && hLines[insertAt - 1].trim() === '') insertAt--;
+      hLines.splice(insertAt, 0, rowStr);
+    }
+    content = hLines.join(eol);
+  } else {
+    content += `${eol}${eol}## Monthly Snapshot History${eol}${eol}| Month | Liquid Cash | Monthly Income | Monthly Expense | Investable Pool | Total Debt | Net Cashflow |${eol}| :--- | :---: | :---: | :---: | :---: | :---: | :---: |${eol}${rowStr}`;
   }
   fs.writeFileSync(filePath, content, 'utf8');
 }

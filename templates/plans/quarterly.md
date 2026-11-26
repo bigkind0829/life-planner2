@@ -15,36 +15,38 @@ floors_ok: true
 updated_at: "YYYY-MM-DD"
 ---
 
-# YYYY Q# Quarterly Plan (4-Part Executive Approval Sheet)
+# YYYY Q# Quarterly Plan (QBR · ROI & Kill/Double-Down)
 
-## 1. 지난 분기 실적 (Prior Quarter Results)
+## 1. 지난 분기 OKR 채점 (0.0–1.0) & 원인 분류
 
-- Key outcomes, misses, and P0 floor compliance from last quarter.
+| Prior Quarter Objective / KR | Score (0.0–1.0) | Root Cause (if < 0.7) | Key Takeaway |
+| :--- | :---: | :--- | :--- |
+| KR 1 | 0.0 | 실행 부족 / 목표 과다 / 방향 오류 | |
 
-## 2. 우선순위 조정 (Quarterly Priority Stack: P0 + P1~PN)
+- **분기 순자산·부채 추이**: Start-of-quarter vs. end-of-quarter `liquid_cash`, `investable_pool`, and `total_debt` delta (from `profile/wealth.md`).
 
-- **P0 (Survival Floor & Fixed)**: Sleep/fixed obligations + ~20% buffer
-- **P1**:
-- **P2**:
-- **P3**:
+## 2. 프로젝트 ROI 랭킹 & Kill / Double-Down 심의
 
-## 3. 다음 계획 & 마일스톤 (Next Plan & Approved Quest/Product)
+| Project | Time / Capital Invested | Realized Outcome (Growth / Income) | Decision (`Double-Down` / `Maintain` / `Pause` / `Kill`) |
+| :--- | :--- | :--- | :---: |
+| | | | |
 
+## 3. 다음 분기 우선순위 & 핵심 마일스톤 (P0 + P1~PN)
+
+- **P0 (Survival Floor & Fixed)**: Sleep/fixed obligations + ~20% buffer + essential living/debt floors
 - [ ] **[P1]** Milestone 1 — *Verification criterion*
 - [ ] **[P2]** Milestone 2 — *Verification criterion*
 - [ ] **[P3]** Milestone 3 — *Verification criterion*
 
-## 4. 시간·돈 결재 (Zero-Sum Hard 100% Cap)
+## 4. 분기 시간·돈 결재 (Symmetric Zero-Sum ≤ 100% Cap)
 
-> Total allocated hours and budget MUST stay `≤ 100%`. Overflow items auto-defer to `0h` (`queued`).
-
-| Priority | Domain / Subsidiary | Weekly Hours | Quarterly Budget | Status |
-| :---: | :--- | :---: | :---: | :---: |
-| **P0** | Fixed + Survival + 20% Buffer | Fixed | Fixed | Locked |
-| **P1** | | | | Approved |
-| **P2** | | | | Approved |
-| *Overflow* | *(Beyond 100% cap)* | 0h | 0 | Deferred |
+| Priority | Domain / Project | Weekly Hours | Monthly Budget | Capital Pool | Target Monthly Income | Status |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
+| **P0** | Fixed + Survival + 20% Buffer | Fixed | Essential | — | — | Locked |
+| **P1** | | | | | | Approved |
+| **P2** | | | | | | Approved |
+| *Overflow* | *(Beyond 100% cap)* | 0h | 0 | 0 | 0 | Deferred |
 
 ## External Signals (`world-radar`)
 
-- Key macro/industry opportunity or risk factored into this quarter.
+- Key macro/industry opportunity or risk factored into this quarter (3–5 topics scanned).
