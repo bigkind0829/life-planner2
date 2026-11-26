@@ -47,14 +47,24 @@ function isValidWeekId(s) {
   return typeof s === 'string' && /^\d{4}-W\d{2}$/.test(s);
 }
 
+function isValidSlug(s) {
+  return typeof s === 'string' && /^[a-z0-9-]+$/.test(s);
+}
+
 function dailyFilePath(dateStr) {
-  const year = dateStr.slice(0, 4);
-  return path.join(ROOT_DIR, 'plans', year, 'daily', `${dateStr}.md`);
+  return path.join(ROOT_DIR, 'plans', dateStr.slice(0, 4), 'daily', `${dateStr}.md`);
 }
 
 function weeklyFilePath(weekId) {
-  const year = weekId.slice(0, 4);
-  return path.join(ROOT_DIR, 'plans', year, 'weekly', `${weekId}.md`);
+  return path.join(ROOT_DIR, 'plans', weekId.slice(0, 4), 'weekly', `${weekId}.md`);
+}
+
+function wealthFilePath() {
+  return path.join(ROOT_DIR, 'profile', 'wealth.md');
+}
+
+function projectFilePath(slug) {
+  return path.join(ROOT_DIR, 'projects', slug, 'index.md');
 }
 
 function parseFrontmatter(content) {
@@ -131,11 +141,27 @@ function cleanBullets(sectionLines) {
   return items;
 }
 
+function parseCheckboxes(section) {
+  const items = [];
+  if (!section.found) return items;
+  section.lines.forEach((raw, offset) => {
+    const m = raw.match(/^\s*-\s+\[([ xX-])\]\s+(.*)$/);
+    if (!m) return;
+    const mark = m[1];
+    const status = (mark === 'x' || mark === 'X') ? 'done' : mark === '-' ? 'skipped' : 'pending';
+    items.push({
+      index: items.length,
+      lineIndex: section.start + offset,
+      status,
+      text: m[2].trim()
+    });
+  });
+  return items;
+}
+
 function parseDailyPlan(dateStr) {
   const filePath = dailyFilePath(dateStr);
-  if (!fs.existsSync(filePath)) {
-    return { exists: false, date: dateStr, filePath };
-  }
+  if (!fs.existsSync(filePath)) return { exists: false, date: dateStr };
   const content = fs.readFileSync(filePath, 'utf8');
   const { meta } = parseFrontmatter(content);
   const titleMatch = content.match(/^#\s+(.+)$/m);
@@ -154,11 +180,9 @@ function parseDailyPlan(dateStr) {
       inTimetable = false;
       continue;
     }
-    if (!inTimetable) continue;
-    if (!line.trim().startsWith('|')) continue;
+    if (!inTimetable || !line.trim().startsWith('|')) continue;
     const cells = line.split('|').slice(1, -1).map(c => c.trim());
-    if (cells.length < 3) continue;
-    if (/^:?-+:?$/.test(cells[0]) || /^time$/i.test(cells[0])) continue;
+    if (cells.length < 3 || /^:?-+:?$/.test(cells[0]) || /^time$/i.test(cells[0])) continue;
 
     if (cells.length >= 4) {
       const statusRaw = cells[3];
@@ -177,7 +201,6 @@ function parseDailyPlan(dateStr) {
         core: cells[2].includes('[핵심]')
       });
     } else {
-      // Legacy 3-column table fallback (read-only status = pending unless checkbox inside)
       blocks.push({
         index: blocks.length,
         lineIndex: i,
@@ -229,17 +252,13 @@ function parseDailyPlan(dateStr) {
 
 function parseWeeklyPlan(weekId) {
   const filePath = weeklyFilePath(weekId);
-  if (!fs.existsSync(filePath)) {
-    return { exists: false, weekId, filePath };
-  }
+  if (!fs.existsSync(filePath)) return { exists: false, weekId };
   const content = fs.readFileSync(filePath, 'utf8');
   const { meta } = parseFrontmatter(content);
   const titleMatch = content.match(/^#\s+(.+)$/m);
   const title = titleMatch ? titleMatch[1].trim() : `${weekId} Weekly Plan`;
 
   const autoLog = cleanBullets(extractSection(content, '## Auto-Adjustment Log').lines);
-
-  // Parse Upcoming Tasks (Check Ahead), fallback to Weekly Core Targets
   let taskSec = extractSection(content, '## Upcoming Tasks');
   if (!taskSec.found) taskSec = extractSection(content, '## Weekly Core Targets');
   const tasks = [];
@@ -274,7 +293,6 @@ function parseWeeklyPlan(weekId) {
     });
   }
 
-  // Parse Time-Block Allocation table
   const allocSec = extractSection(content, '## Time-Block Allocation');
   const daySchedule = [];
   if (allocSec.found) {
@@ -282,12 +300,7 @@ function parseWeeklyPlan(weekId) {
       if (!line.trim().startsWith('|')) continue;
       const cells = line.split('|').slice(1, -1).map(c => c.trim());
       if (cells.length < 3 || /^:?-+:?$/.test(cells[0]) || /^day$/i.test(cells[0])) continue;
-      daySchedule.push({
-        day: cells[0],
-        theme: cells[1] || '',
-        blocks: cells[2] || '',
-        buffer: cells[3] || ''
-      });
+      daySchedule.push({ day: cells[0], theme: cells[1] || '', blocks: cells[2] || '', buffer: cells[3] || '' });
     }
   }
 
@@ -304,6 +317,81 @@ function parseWeeklyPlan(weekId) {
     tasks,
     daySchedule
   };
+}
+
+function parseWealth() {
+  const filePath = wealthFilePath();
+  if (!fs.existsSync(filePath)) return { exists: false };
+  const content = fs.readFileSync(filePath, 'utf8');
+  const { meta } = parseFrontmatter(content);
+  const liquid = Number(meta.liquid_cash_krw || 0);
+  const income = Number(meta.monthly_income_krw || 0);
+  const expense = Number(meta.monthly_expense_krw || 0);
+  const debt = Number(meta.total_debt_krw || 0);
+  const investable = Number(meta.investable_pool_krw || 0);
+
+  // Check latest monthly draft in council/
+  const councilDir = path.join(ROOT_DIR, 'council');
+  let latestDraft = null;
+  if (fs.existsSync(councilDir)) {
+    const drafts = fs.readdirSync(councilDir)
+      .filter(f => /^\d{4}-\d{2}-\d{2}-monthly-draft\.md$/.test(f))
+      .sort()
+      .reverse();
+    if (drafts.length) latestDraft = drafts[0];
+  }
+
+  return {
+    exists: true,
+    updatedAt: meta.updated_at || '',
+    liquid_cash_krw: liquid,
+    monthly_income_krw: income,
+    monthly_expense_krw: expense,
+    monthly_net_krw: income - expense,
+    total_debt_krw: debt,
+    investable_pool_krw: investable,
+    floors: cleanBullets(extractSection(content, '## Non-Negotiable Floor').lines),
+    goals: cleanBullets(extractSection(content, '## Goals & Priorities').lines),
+    latestMonthlyDraft: latestDraft
+  };
+}
+
+function parseProjects() {
+  const dir = path.join(ROOT_DIR, 'projects');
+  if (!fs.existsSync(dir)) return [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true }).filter(e => e.isDirectory());
+  const list = [];
+  for (const ent of entries) {
+    const slug = ent.name;
+    const idxPath = projectFilePath(slug);
+    if (!fs.existsSync(idxPath)) continue;
+    const content = fs.readFileSync(idxPath, 'utf8');
+    const { meta } = parseFrontmatter(content);
+    const titleMatch = content.match(/^#\s+(?:Project:\s*)?(.+)$/m);
+    const title = titleMatch ? titleMatch[1].trim() : slug;
+    const vision = cleanBullets(extractSection(content, '## Goal & Vision').lines).slice(0, 2);
+    const nextActions = parseCheckboxes(extractSection(content, '## Next Actions'));
+    const milestones = parseCheckboxes(extractSection(content, '## Milestones'));
+
+    list.push({
+      slug,
+      title,
+      domain: meta.domain || 'mastery',
+      status: meta.status || 'queued',
+      owner_agent: meta.owner_agent || 'project-lead',
+      parent_plan: meta.parent_plan || '',
+      weekly_quota_hours: Number(meta.weekly_quota_hours || 0),
+      monthly_budget_krw: Number(meta.monthly_budget_krw || 0),
+      capital_pool_krw: Number(meta.capital_pool_krw || 0),
+      target_monthly_income_krw: Number(meta.target_monthly_income_krw || 0),
+      updated_at: meta.updated_at || '',
+      vision,
+      nextActions,
+      milestones
+    });
+  }
+  const order = { active: 0, queued: 1, paused: 2, completed: 3 };
+  return list.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9) || a.slug.localeCompare(b.slug));
 }
 
 function parseScheduleReference() {
@@ -346,7 +434,7 @@ function toggleDailyBlock(dateStr, blockIndex, targetStatus) {
   const parsed = parseDailyPlan(dateStr);
   const block = parsed.blocks[blockIndex];
   if (!block) throw new Error('Block index out of range');
-  if (block.legacy3Col) throw new Error('Legacy 3-column daily plan cannot be toggled; regenerate with new template.');
+  if (block.legacy3Col) throw new Error('Legacy 3-column daily plan cannot be toggled');
 
   const content = fs.readFileSync(filePath, 'utf8');
   const eol = content.includes('\r\n') ? '\r\n' : '\n';
@@ -356,17 +444,12 @@ function toggleDailyBlock(dateStr, blockIndex, targetStatus) {
   cells[3] = mark;
   lines[block.lineIndex] = `| ${cells.join(' | ')} |`;
 
-  let nextContent = lines.join(eol);
-  // Recalculate progress
   const statuses = parsed.blocks.map((b, idx) => (idx === blockIndex ? targetStatus : b.status));
   const checkable = statuses.filter(s => s !== 'skipped').length;
   const doneCount = statuses.filter(s => s === 'done').length;
   const progress = checkable > 0 ? Math.round((doneCount / checkable) * 100) : 0;
 
-  nextContent = updateFrontmatterFields(nextContent, {
-    progress,
-    updated_at: getSeoulToday()
-  });
+  const nextContent = updateFrontmatterFields(lines.join(eol), { progress, updated_at: getSeoulToday() });
   fs.writeFileSync(filePath, nextContent, 'utf8');
 }
 
@@ -383,16 +466,12 @@ function toggleWeeklyTask(weekId, taskIndex, targetStatus) {
   const mark = targetStatus === 'done' ? 'x' : targetStatus === 'skipped' ? '-' : ' ';
   lines[task.lineIndex] = lines[task.lineIndex].replace(/^(\s*-\s+\[)[ xX-](\]\s+)/, `$1${mark}$2`);
 
-  let nextContent = lines.join(eol);
   const statuses = parsed.tasks.map((t, idx) => (idx === taskIndex ? targetStatus : t.status));
   const checkable = statuses.filter(s => s !== 'skipped').length;
   const doneCount = statuses.filter(s => s === 'done').length;
   const progress = checkable > 0 ? Math.round((doneCount / checkable) * 100) : 0;
 
-  nextContent = updateFrontmatterFields(nextContent, {
-    progress,
-    updated_at: getSeoulToday()
-  });
+  const nextContent = updateFrontmatterFields(lines.join(eol), { progress, updated_at: getSeoulToday() });
   fs.writeFileSync(filePath, nextContent, 'utf8');
 }
 
@@ -417,8 +496,7 @@ function addWeeklyTask(weekId, dayTag, priority, text) {
   } else {
     lines.push('', '## Upcoming Tasks (Check Ahead)', '', newLine);
   }
-  const nextContent = updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() });
-  fs.writeFileSync(filePath, nextContent, 'utf8');
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
 }
 
 function addDailyNote(dateStr, text) {
@@ -434,15 +512,13 @@ function addDailyNote(dateStr, text) {
   const newLine = `- ${getSeoulTimeHHMM()}: ${cleanText}`;
 
   if (sec.found) {
-    // Remove placeholder line if it's the only bullet
     let insertAt = sec.end;
     while (insertAt > sec.start && lines[insertAt - 1].trim() === '') insertAt--;
     lines.splice(insertAt, 0, newLine);
   } else {
     lines.push('', '## Quick Notes / Ad-Hoc Changes', '', newLine);
   }
-  const nextContent = updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() });
-  fs.writeFileSync(filePath, nextContent, 'utf8');
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
 }
 
 function deleteDailyNote(dateStr, noteIndex) {
@@ -456,8 +532,77 @@ function deleteDailyNote(dateStr, noteIndex) {
   const eol = content.includes('\r\n') ? '\r\n' : '\n';
   const lines = content.split(/\r?\n/);
   lines.splice(note.lineIndex, 1);
-  const nextContent = updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() });
-  fs.writeFileSync(filePath, nextContent, 'utf8');
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
+}
+
+function updateWealthSnapshot(body) {
+  const filePath = wealthFilePath();
+  if (!fs.existsSync(filePath)) throw new Error('profile/wealth.md not found');
+  const updates = { updated_at: getSeoulToday() };
+  const numericFields = ['liquid_cash_krw', 'monthly_income_krw', 'monthly_expense_krw', 'total_debt_krw', 'investable_pool_krw'];
+  for (const field of numericFields) {
+    if (body[field] !== undefined && body[field] !== '') {
+      const n = Number(body[field]);
+      if (!Number.isFinite(n) || n < 0) throw new Error(`Invalid number for ${field}`);
+      updates[field] = Math.round(n);
+    }
+  }
+  let content = fs.readFileSync(filePath, 'utf8');
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  content = updateFrontmatterFields(content, updates);
+
+  const note = String(body.note || '').trim().replace(/[\r\n]+/g, ' ');
+  if (note) {
+    const lines = content.split(/\r?\n/);
+    const sec = extractSection(content, '## Notes & History');
+    const entry = `- ${getSeoulToday()}: ${note}`;
+    if (sec.found) {
+      let insertAt = sec.end;
+      while (insertAt > sec.start && lines[insertAt - 1].trim() === '') insertAt--;
+      lines.splice(insertAt, 0, entry);
+      content = lines.join(eol);
+    } else {
+      content += `${eol}${eol}## Notes & History${eol}${eol}${entry}`;
+    }
+  }
+  fs.writeFileSync(filePath, content, 'utf8');
+}
+
+function toggleProjectAction(slug, actionIndex, targetStatus) {
+  if (!isValidSlug(slug)) throw new Error('Invalid project slug');
+  const filePath = projectFilePath(slug);
+  if (!fs.existsSync(filePath)) throw new Error('Project index not found');
+  const content = fs.readFileSync(filePath, 'utf8');
+  const actions = parseCheckboxes(extractSection(content, '## Next Actions'));
+  const target = actions[actionIndex];
+  if (!target) throw new Error('Action index out of range');
+
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(/\r?\n/);
+  const mark = targetStatus === 'done' ? 'x' : ' ';
+  lines[target.lineIndex] = lines[target.lineIndex].replace(/^(\s*-\s+\[)[ xX-](\]\s+)/, `$1${mark}$2`);
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
+}
+
+function updateProjectQuotas(body) {
+  const slug = body.slug;
+  if (!isValidSlug(slug)) throw new Error('Invalid project slug');
+  const filePath = projectFilePath(slug);
+  if (!fs.existsSync(filePath)) throw new Error('Project index not found');
+
+  const updates = { updated_at: getSeoulToday() };
+  if (['active', 'queued', 'paused', 'completed'].includes(body.status)) {
+    updates.status = body.status;
+  }
+  for (const f of ['weekly_quota_hours', 'monthly_budget_krw', 'capital_pool_krw', 'target_monthly_income_krw']) {
+    if (body[f] !== undefined && body[f] !== '') {
+      const n = Number(body[f]);
+      if (!Number.isFinite(n) || n < 0) throw new Error(`Invalid number for ${f}`);
+      updates[f] = f === 'weekly_quota_hours' ? Math.round(n * 10) / 10 : Math.round(n);
+    }
+  }
+  const content = fs.readFileSync(filePath, 'utf8');
+  fs.writeFileSync(filePath, updateFrontmatterFields(content, updates), 'utf8');
 }
 
 function readJsonBody(req) {
@@ -468,23 +613,16 @@ function readJsonBody(req) {
       if (raw.length > 65536) reject(new Error('Payload too large'));
     });
     req.on('end', () => {
-      try {
-        resolve(raw ? JSON.parse(raw) : {});
-      } catch {
-        reject(new Error('Invalid JSON'));
-      }
+      try { resolve(raw ? JSON.parse(raw) : {}); }
+      catch { reject(new Error('Invalid JSON')); }
     });
     req.on('error', reject);
   });
 }
 
 function sendJson(res, statusCode, data) {
-  const payload = JSON.stringify(data);
-  res.writeHead(statusCode, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store'
-  });
-  res.end(payload);
+  res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+  res.end(JSON.stringify(data));
 }
 
 function buildState(dateStr) {
@@ -495,8 +633,16 @@ function buildState(dateStr) {
     ? daily.meta.parent_id
     : getIsoWeekId(targetDate);
   const weekly = parseWeeklyPlan(weekId);
-  const scheduleRef = parseScheduleReference();
-  const availableDates = listAvailableDates();
+  const wealth = parseWealth();
+  const projects = parseProjects();
+  const portfolioTotals = projects.reduce((acc, p) => {
+    if (p.status === 'active') acc.activeCount += 1;
+    acc.totalWeeklyHours += p.weekly_quota_hours;
+    acc.totalMonthlyBudgetKrw += p.monthly_budget_krw;
+    acc.totalCapitalPoolKrw += p.capital_pool_krw;
+    acc.totalTargetIncomeKrw += p.target_monthly_income_krw;
+    return acc;
+  }, { activeCount: 0, totalWeeklyHours: 0, totalMonthlyBudgetKrw: 0, totalCapitalPoolKrw: 0, totalTargetIncomeKrw: 0 });
 
   return {
     today,
@@ -504,8 +650,11 @@ function buildState(dateStr) {
     weekId,
     daily,
     weekly,
-    scheduleRef,
-    availableDates
+    wealth,
+    projects,
+    portfolioTotals,
+    scheduleRef: parseScheduleReference(),
+    availableDates: listAvailableDates()
   };
 }
 
@@ -521,8 +670,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && url.pathname === '/api/state') {
-      const dateParam = url.searchParams.get('date');
-      return sendJson(res, 200, buildState(dateParam));
+      return sendJson(res, 200, buildState(url.searchParams.get('date')));
     }
 
     if (req.method === 'POST' && url.pathname === '/api/daily/toggle') {
@@ -559,6 +707,25 @@ const server = http.createServer(async (req, res) => {
       const body = await readJsonBody(req);
       if (!isValidDate(body.date)) return sendJson(res, 400, { error: 'Invalid date' });
       deleteDailyNote(body.date, Number(body.index));
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/wealth/update') {
+      const body = await readJsonBody(req);
+      updateWealthSnapshot(body);
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/project/toggle-action') {
+      const body = await readJsonBody(req);
+      if (!['pending', 'done'].includes(body.status)) return sendJson(res, 400, { error: 'Invalid status' });
+      toggleProjectAction(body.slug, Number(body.index), body.status);
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/project/update-quotas') {
+      const body = await readJsonBody(req);
+      updateProjectQuotas(body);
       return sendJson(res, 200, buildState(body.date));
     }
 

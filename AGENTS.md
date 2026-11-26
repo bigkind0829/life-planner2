@@ -7,14 +7,14 @@ This workspace is an Antigravity-native, multi-agent **Life Planner** designed a
 Visual references: [ARCHITECTURE.md](ARCHITECTURE.md) (Mermaid) and [ARCHITECTURE.canvas](ARCHITECTURE.canvas) (Obsidian). Local check-off UI: `dashboard/`.
 
 ### Four Specialized Subagents (`.agents/agents/`, all `model: flash`)
-Time (schedule) is a shared scarce resource managed by the Main Agent (Planner Layer), not a competing subagent.
+**Time** (`profile/schedule-constraints.md` + Google Calendar) and **Money/Capital** (`profile/wealth.md`) are the Holding Company's two symmetric scarce resource pools allocated across P0 floors, plans, and projects (`projects/*/index.md`).
 
 | Layer | Subagent | Role & Owned Scope | Local Inputs |
 | :--- | :--- | :--- | :--- |
 | **Strategic Council (3-Axis)** | `guardian` | **Defense & Floors**: Values, health/sleep/burnout floor, relationships & rest (issues P0 floor vetoes) | `profile/north-star.md`, `vitality.md`, `connection-joy.md` |
-| **Strategic Council (3-Axis)** | `growth` | **Offense & Resources**: Career/study mastery, wealth/budget limits, project portfolio ranking | `profile/mastery.md`, `wealth.md` + `projects/*/index.md` summary |
+| **Strategic Council (3-Axis)** | `growth` | **Offense & Dual-Resource Portfolio**: Career/study mastery, wealth/capital portfolio (income, savings, investing, trading, startups), project ranking | `profile/mastery.md`, `wealth.md` + `projects/*/index.md` Time & Money summary |
 | **Strategic Council (3-Axis)** | `world-radar` | **External Signal**: Targeted web search on 3–5 focus topics → plan-relevant opportunities & risks | `profile/world-radar.md` + `search_web` |
-| **Subsidiary Executor (1)** | `project-lead` | **Reusable Project Manager**: Playbook-driven execution for any single `projects/<slug>/` | Target `projects/<slug>/` only (`index.md` SSOT) |
+| **Subsidiary Executor (1)** | `project-lead` | **Reusable Project Manager**: Playbook-driven execution for any single growth or wealth project under `projects/<slug>/` | Target `projects/<slug>/` only (`index.md` Time & Money SSOT) |
 
 - **Fair Mediation Rule**: `guardian` defends P0 floors and flags violations, while `growth` pushes high-leverage outcomes. **The Main Agent mediates conflicts between them** using `profile/north-star.md` charter rules and presents unresolved trade-offs as 2–3 concrete scenarios for user approval.
 - **No Wrapper Agents**: Tactical planning (`/weekly-plan`, `/daily-plan`), system audits (`/system-audit`), onboarding (`/onboard-life`), and GitHub sync (`/sync-github`) run directly in the Main Agent without unnecessary wrapper subagents.
@@ -22,7 +22,7 @@ Time (schedule) is a shared scarce resource managed by the Main Agent (Planner L
 ### Seven Skills in Two Clear Groups (`.agents/skills/`)
 
 **Core Planning Loop (4 Skills)**
-- **`/strategy-review`** *(Strategic + Rebalance — User Consultation Required)*: Yearly / Quarterly / Monthly reviews summon `guardian`, `growth`, and `world-radar` in parallel (`invoke_subagent`) to produce a **4-Part Executive Approval Sheet** (`≤ 100%` Zero-Sum Cap) and archive decisions in `council/`. Also handles **Rebalance Mode** (threshold escalation or `P1` conflict resolution) by summoning `guardian` + `growth` in parallel.
+- **`/strategy-review`** *(Strategic + 28th Auto-Draft + Rebalance — User Approval Required)*: Yearly / Quarterly / Monthly reviews summon `guardian`, `growth`, and `world-radar` in parallel (`invoke_subagent`) to produce a **4-Part Executive Approval Sheet** (`≤ 100%` Time & Money Zero-Sum Cap, proactively pitching mastery + wealth/capital projects) and archive decisions in `council/`. Also runs a read-only **28th 20:00 Monthly Auto-Draft** saved to `council/` for user sign-off, and handles **Rebalance Mode** (`guardian` + `growth`).
 - **`/weekly-plan`** *(Tactical — Auto-Generated, 0 Subagent Calls)*: Auto-drafts next week every Sunday 20:30 and rolls forward daily at 06:00 as tasks complete early or carry over. Reads only active Monthly plan, `profile/schedule-constraints.md`, `profile/vitality.md`, active `projects/*/index.md` (`Next Actions` & `Milestones`), Google Calendar (personal + exams only), and recent `logs/`.
 - **`/daily-plan`** *(Tactical — Auto-Generated at 06:00, 0 Subagent Calls)*: Automatically reads yesterday's dashboard checkmarks (`[x]`/`[-]`), ahead-of-schedule weekly checkmarks, exception notes (`## Quick Notes / Ad-Hoc Changes`), and Google Calendar to archive `logs/YYYY-MM-DD-checkin.md`, build today's timetable (`≤ 100%` + ~20% buffer), and roll forward the active weekly plan. No mandatory evening check-in conversation — user only chats/writes notes for ad-hoc exceptions or mid-day reschedules.
 - **`/project-manage`** *(Holding–Subsidiary)*: Invokes `project-lead` with a target `projects/<slug>/index.md` playbook. Holding Company sets `status` & `weekly_quota_hours`; `project-lead` publishes 1–3 concrete `Next Actions` back into `projects/<slug>/index.md` (**Single Source of Truth**).
@@ -66,7 +66,8 @@ Time (schedule) is a shared scarce resource managed by the Main Agent (Planner L
    - `Conflicts & Risks / Floor Warnings`
    - `Indicators (1–2)`
 7. **Single Source of Truth (SSOT) & Schema Integrity**:
-   - `projects/<slug>/index.md` is the **sole SSOT** for project status, `weekly_quota_hours`, operating rules (`## Operating Rules & Constraints`), milestones, and `## Next Actions`.
+   - `projects/<slug>/index.md` is the **sole SSOT** for project status, Time quota (`weekly_quota_hours`), Money/Capital quotas (`monthly_budget_krw`, `capital_pool_krw`, `target_monthly_income_krw`), operating rules (`## Operating Rules & Constraints`), milestones, and `## Next Actions`.
+   - `profile/wealth.md` YAML frontmatter is the **sole SSOT** for the financial snapshot (`liquid_cash_krw`, `monthly_income_krw`, `monthly_expense_krw`, `total_debt_krw`, `investable_pool_krw`) shared directly by Antigravity and `dashboard/`.
    - `plans/YYYY/daily/YYYY-MM-DD.md` and `plans/YYYY/weekly/YYYY-Www.md` are the **sole SSOT** shared directly by Antigravity, `dashboard/`, and Obsidian (no duplicate database).
    - Every file in `plans/YYYY/` MUST start with valid YAML frontmatter matching `templates/plans/` and use ASCII/ISO filenames (`YYYY-MM-DD`, `YYYY-Www`, `YYYY-MM`, `YYYY-Q#`).
 8. **4-Part Executive Approval & Proactive 3-Option Pitch**:

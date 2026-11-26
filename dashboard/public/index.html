@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Life Planner — Daily &amp; Weekly Checkboard</title>
+  <title>Life Planner — Time · Money · Projects</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -49,7 +49,7 @@
       line-height: 1.5;
     }
     .container {
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 18px 20px 104px;
     }
@@ -59,25 +59,16 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding-bottom: 14px;
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .brand h1 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+    .brand { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .brand h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       padding: 4px 10px;
       border-radius: 999px;
       font-size: 12px;
@@ -86,17 +77,13 @@
       color: var(--muted);
       border: 1px solid var(--border);
     }
+    .pill.clickable { cursor: pointer; }
     .pill.primary { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
     .pill.success { background: var(--success-soft); color: var(--success); border-color: transparent; }
     .pill.warning { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
     .pill.danger { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
 
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
     button {
       font-family: inherit;
       font-size: 13px;
@@ -109,24 +96,31 @@
       transition: all 140ms ease;
     }
     button:hover { border-color: var(--primary); }
-    button.primary {
+    button.primary { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+    button.primary:hover { opacity: 0.92; }
+    button.danger { background: var(--danger); color: #fff; border-color: var(--danger); font-weight: 600; }
+    button.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+    /* Main 3-Tab Navigation */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13.5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .tab-btn.active {
       background: var(--primary);
       color: #fff;
       border-color: var(--primary);
-      font-weight: 600;
-    }
-    button.primary:hover { opacity: 0.92; }
-    button.danger {
-      background: var(--danger);
-      color: #fff;
-      border-color: var(--danger);
-      font-weight: 600;
-    }
-    button.active {
-      background: var(--primary-soft);
-      color: var(--primary);
-      border-color: var(--primary);
-      font-weight: 600;
     }
 
     .banners { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
@@ -141,18 +135,9 @@
       justify-content: space-between;
       gap: 10px;
     }
-    .banner.danger {
-      background: var(--danger-soft);
-      border-color: var(--danger);
-    }
-    .banner.warning {
-      background: var(--warning-soft);
-      border-color: var(--warning);
-    }
-    .banner.info {
-      background: var(--primary-soft);
-      border-color: transparent;
-    }
+    .banner.danger { background: var(--danger-soft); border-color: var(--danger); }
+    .banner.warning { background: var(--warning-soft); border-color: var(--warning); }
+    .banner.info { background: var(--primary-soft); border-color: transparent; }
     .banner-title { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
     .banner ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
 
@@ -162,9 +147,34 @@
       gap: 16px;
       align-items: start;
     }
-    @media (max-width: 860px) {
-      .grid { grid-template-columns: 1fr; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
     }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 960px) {
+      .grid, .grid-2 { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+    .kpi-val { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .kpi-val.pos { color: var(--success); }
+    .kpi-val.neg { color: var(--danger); }
 
     .panel {
       background: var(--surface);
@@ -181,11 +191,7 @@
       gap: 8px;
       margin-bottom: 12px;
     }
-    .panel-head h2 {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-    }
+    .panel-head h2 { margin: 0; font-size: 15px; font-weight: 700; }
     .sub-filters { display: flex; gap: 6px; }
     .sub-filters button { padding: 3px 9px; font-size: 12px; border-radius: 6px; }
 
@@ -199,24 +205,12 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--surface);
-      transition: background 140ms ease, opacity 140ms ease;
     }
-    .block-card.done {
-      background: var(--success-soft);
-      border-color: transparent;
-    }
+    .block-card.done { background: var(--success-soft); border-color: transparent; }
     .block-card.done .task-text { text-decoration: line-through; opacity: 0.72; }
-    .block-card.skipped {
-      background: var(--surface-2);
-      opacity: 0.58;
-    }
+    .block-card.skipped { background: var(--surface-2); opacity: 0.58; }
     .block-card.skipped .task-text { text-decoration: line-through; }
-    .time-col {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+    .time-col { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
     .prio-badge {
       text-align: center;
       font-size: 11px;
@@ -242,12 +236,7 @@
     }
     .task-text { font-size: 13.5px; word-break: keep-all; }
     .actions { display: flex; gap: 5px; }
-    .icon-btn {
-      padding: 4px 8px;
-      font-size: 12px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
+    .icon-btn { padding: 4px 8px; font-size: 12px; border-radius: 6px; font-weight: 600; }
     .icon-btn.done-active { background: var(--success); color: #fff; border-color: var(--success); }
     .icon-btn.skip-active { background: var(--muted); color: #fff; border-color: var(--muted); }
 
@@ -261,10 +250,7 @@
       border: 1px solid var(--border);
       background: var(--surface);
     }
-    .weekly-item.done {
-      background: var(--success-soft);
-      border-color: transparent;
-    }
+    .weekly-item.done { background: var(--success-soft); border-color: transparent; }
     .weekly-item.done .weekly-text { text-decoration: line-through; opacity: 0.72; }
     .weekly-meta { display: flex; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
     .tag {
@@ -276,14 +262,11 @@
       color: var(--muted);
     }
     .tag.ahead { background: var(--success-soft); color: var(--success); }
+    .tag.active-st { background: var(--success-soft); color: var(--success); }
+    .tag.queued-st { background: var(--warning-soft); color: var(--warning); }
 
-    .add-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    input[type="text"], select {
+    .add-row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    input[type="text"], input[type="number"], select {
       font-family: inherit;
       font-size: 13px;
       padding: 7px 10px;
@@ -292,36 +275,44 @@
       background: var(--bg);
       color: var(--text);
     }
-    input[type="text"]:focus, select:focus {
-      outline: 2px solid var(--primary-soft);
-      border-color: var(--primary);
-    }
+    input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
 
-    details {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px dashed var(--border);
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
-    summary {
-      cursor: pointer;
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .field.full { grid-column: 1 / -1; }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .quota-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--surface-2);
       font-size: 12.5px;
       font-weight: 600;
-      color: var(--muted);
     }
-    .mini-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 12px;
-    }
-    .mini-table th, .mini-table td {
-      text-align: left;
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border);
-    }
+    .mini-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
+    .mini-table th, .mini-table td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); }
     .mini-table th { color: var(--muted); font-weight: 600; }
 
-    /* Bottom Floating Exception Note Bar */
+    details { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); }
+    summary { cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+
     .note-dock {
       position: fixed;
       left: 0; right: 0; bottom: 0;
@@ -331,22 +322,10 @@
       box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
       z-index: 20;
     }
-    .note-dock-inner {
-      max-width: 1180px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
+    .note-dock-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .note-dock-inner input { flex: 1; min-width: 240px; }
 
-    .notes-list {
-      margin-top: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .notes-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
     .note-chip {
       display: flex;
       align-items: center;
@@ -357,13 +336,7 @@
       background: var(--surface-2);
       font-size: 12.5px;
     }
-    .note-del {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 2px 6px;
-      font-size: 13px;
-    }
+    .note-del { border: none; background: transparent; color: var(--muted); padding: 2px 6px; font-size: 13px; }
     .note-del:hover { color: var(--danger); }
 
     .toast {
@@ -393,7 +366,7 @@
         <h1>Life Planner</h1>
         <span id="date-badge" class="pill primary">Loading...</span>
         <span id="progress-badge" class="pill success">0%</span>
-        <span id="week-badge" class="pill">W--</span>
+        <span id="cash-badge" class="pill clickable" title="돈·재산 탭 열기">💰 --</span>
       </div>
       <div class="controls">
         <button id="btn-prev" title="어제">← 어제</button>
@@ -405,86 +378,162 @@
       </div>
     </header>
 
-    <div id="banners" class="banners"></div>
+    <!-- 3-Tab Holding Company Switcher -->
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="time">⏱ 시간표 (오늘 · 주간)</button>
+      <button class="tab-btn" data-tab="wealth">💰 돈 · 재산 포트폴리오</button>
+      <button class="tab-btn" data-tab="projects">🚀 프로젝트 (시간 + 자본)</button>
+    </nav>
 
-    <!-- School Calendar Read-Only Reference Drawer -->
-    <div id="school-panel" class="panel" style="display:none; margin-bottom:16px;">
-      <div class="panel-head">
-        <h2>학교 캘린더 · 고정 일정 참고 (읽기 전용 · 원본 보존)</h2>
-        <button id="btn-copy-exam-prompt" class="primary">시험 범위 강의 목록 조회 프롬프트 복사</button>
+    <!-- TAB 1: TIME -->
+    <div id="tab-time">
+      <div id="banners" class="banners"></div>
+
+      <div id="school-panel" class="panel" style="display:none; margin-bottom:16px;">
+        <div class="panel-head">
+          <h2>학교 캘린더 · 고정 일정 참고 (읽기 전용 · 원본 보존)</h2>
+          <button id="btn-copy-exam-prompt" class="primary">시험 범위 강의 목록 조회 프롬프트 복사</button>
+        </div>
+        <div id="school-content"></div>
       </div>
-      <div id="school-content"></div>
+
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2 id="daily-title">오늘 타임블록</h2>
+            <div class="sub-filters">
+              <button data-filter="all" class="active">전체</button>
+              <button data-filter="pending">미완료</button>
+              <button data-filter="core">핵심</button>
+            </div>
+          </div>
+          <div id="daily-list" class="block-list"></div>
+
+          <details id="deferred-box" style="display:none;">
+            <summary>자동 보류 / 이월된 하위 항목 (Deferred)</summary>
+            <ul id="deferred-list" style="margin:8px 0 0; padding-left:18px; font-size:13px; color:var(--muted);"></ul>
+          </details>
+
+          <div style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:12.5px; font-weight:700; color:var(--muted);">오늘 기록된 예외 변경 메모 (다음 06:00 자동 반영)</span>
+              <button id="btn-copy-reschedule" style="padding:3px 9px; font-size:12px;">지금 바로 반영 프롬프트 복사</button>
+            </div>
+            <div id="notes-list" class="notes-list"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2 id="weekly-title">이번 주 남은 할 일 (미리 완료 체크)</h2>
+            <span class="pill">체크 시 다음 06:00 자동 차감</span>
+          </div>
+          <div id="weekly-list" class="block-list"></div>
+
+          <form id="add-weekly-form" class="add-row">
+            <select id="add-day" aria-label="요일">
+              <option value="Week">이번 주</option>
+              <option value="Mon">월</option>
+              <option value="Tue">화</option>
+              <option value="Wed">수</option>
+              <option value="Thu">목</option>
+              <option value="Fri">금</option>
+              <option value="Sat">토</option>
+              <option value="Sun">일</option>
+            </select>
+            <select id="add-prio" aria-label="우선순위">
+              <option value="P1">P1</option>
+              <option value="P2" selected>P2</option>
+              <option value="P3">P3</option>
+            </select>
+            <input id="add-text" type="text" placeholder="주간 할 일 빠르게 추가..." style="flex:1; min-width:140px;" />
+            <button type="submit">추가</button>
+          </form>
+
+          <details id="weekly-table-box">
+            <summary>이번 주 요일별 배정 요약 보기</summary>
+            <table class="mini-table">
+              <thead><tr><th>요일</th><th>테마</th><th>핵심 블록</th></tr></thead>
+              <tbody id="weekly-table-body"></tbody>
+            </table>
+          </details>
+        </section>
+      </div>
     </div>
 
-    <div class="grid">
-      <!-- Left: Today's Timetable -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 id="daily-title">오늘 타임블록</h2>
-          <div class="sub-filters">
-            <button data-filter="all" class="active">전체</button>
-            <button data-filter="pending">미완료</button>
-            <button data-filter="core">핵심</button>
+    <!-- TAB 2: WEALTH / MONEY -->
+    <div id="tab-wealth" style="display:none;">
+      <div id="wealth-draft-banner" class="banners"></div>
+      <div id="wealth-kpis" class="kpi-grid"></div>
+
+      <div class="grid-2">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>재산 스냅샷 수정 (profile/wealth.md 직접 동기화)</h2>
+            <button id="btn-copy-wealth-pitch" class="primary">월/연간 재산 프로젝트 3안 제안받기</button>
           </div>
-        </div>
-        <div id="daily-list" class="block-list"></div>
+          <form id="wealth-form" class="form-grid">
+            <div class="field">
+              <label for="w-liquid">즉시 가용 현금 (원)</label>
+              <input id="w-liquid" type="number" step="10000" min="0" />
+            </div>
+            <div class="field">
+              <label for="w-investable">투자·운영 자본 풀 (원)</label>
+              <input id="w-investable" type="number" step="10000" min="0" />
+            </div>
+            <div class="field">
+              <label for="w-income">월 예상 수입 (원)</label>
+              <input id="w-income" type="number" step="10000" min="0" />
+            </div>
+            <div class="field">
+              <label for="w-expense">월 예상 지출 (원)</label>
+              <input id="w-expense" type="number" step="10000" min="0" />
+            </div>
+            <div class="field full">
+              <label for="w-debt">총 부채 잔액 (원)</label>
+              <input id="w-debt" type="number" step="10000" min="0" />
+            </div>
+            <div class="field full">
+              <label for="w-note">변동 메모 (선택 — 예: 과외 1팀 선불 40만 원 입금)</label>
+              <input id="w-note" type="text" placeholder="큰 수입·지출·상환 내역이 있을 때만 1줄 메모" />
+            </div>
+            <div class="field full" style="flex-direction:row; justify-content:flex-end;">
+              <button type="submit" class="primary">재산 스냅샷 저장</button>
+            </div>
+          </form>
+        </section>
 
-        <details id="deferred-box" style="display:none;">
-          <summary>자동 보류 / 이월된 하위 항목 (Deferred)</summary>
-          <ul id="deferred-list" style="margin:8px 0 0; padding-left:18px; font-size:13px; color:var(--muted);"></ul>
-        </details>
-
-        <div id="notes-section" style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--border);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12.5px; font-weight:700; color:var(--muted);">오늘 기록된 예외 변경 메모 (다음 06:00 자동 반영)</span>
-            <button id="btn-copy-reschedule" style="padding:3px 9px; font-size:12px;">지금 바로 반영 프롬프트 복사</button>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>지주사 자본 · 현금흐름 프로젝트 배분표</h2>
+            <span class="pill">SSOT: projects/*/index.md</span>
           </div>
-          <div id="notes-list" class="notes-list"></div>
-        </div>
-      </section>
-
-      <!-- Right: This Week's Remaining Tasks (Check Ahead) -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 id="weekly-title">이번 주 남은 할 일 (미리 완료 체크)</h2>
-          <span class="pill">체크 시 다음 06:00 자동 차감</span>
-        </div>
-        <div id="weekly-list" class="block-list"></div>
-
-        <form id="add-weekly-form" class="add-row">
-          <select id="add-day" aria-label="요일">
-            <option value="Week">이번 주</option>
-            <option value="Mon">월</option>
-            <option value="Tue">화</option>
-            <option value="Wed">수</option>
-            <option value="Thu">목</option>
-            <option value="Fri">금</option>
-            <option value="Sat">토</option>
-            <option value="Sun">일</option>
-          </select>
-          <select id="add-prio" aria-label="우선순위">
-            <option value="P1">P1</option>
-            <option value="P2" selected>P2</option>
-            <option value="P3">P3</option>
-          </select>
-          <input id="add-text" type="text" placeholder="주간 할 일 빠르게 추가..." style="flex:1; min-width:140px;" />
-          <button type="submit">추가</button>
-        </form>
-
-        <details id="weekly-table-box">
-          <summary>이번 주 요일별 배정 요약 보기</summary>
           <table class="mini-table">
             <thead>
-              <tr><th>요일</th><th>테마</th><th>핵심 블록</th></tr>
+              <tr><th>프로젝트</th><th>상태</th><th>월 예산</th><th>배정 자본</th><th>월 목표수익</th></tr>
             </thead>
-            <tbody id="weekly-table-body"></tbody>
+            <tbody id="wealth-alloc-body"></tbody>
           </table>
-        </details>
-      </section>
+
+          <details open>
+            <summary>재산 목표 &amp; 핵심 마일스톤 (profile/wealth.md)</summary>
+            <ul id="wealth-goals-list" style="margin:8px 0 0; padding-left:18px; font-size:13px;"></ul>
+          </details>
+        </section>
+      </div>
+    </div>
+
+    <!-- TAB 3: PROJECTS -->
+    <div id="tab-projects" style="display:none;">
+      <div class="panel" style="margin-bottom:16px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">
+        <div id="projects-totals" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        <button id="btn-copy-new-project" class="primary">+ 새 성장/재산 프로젝트 추가 프롬프트 복사</button>
+      </div>
+      <div id="projects-grid" class="grid-2"></div>
     </div>
   </div>
 
-  <!-- Bottom Floating Exception Note Bar -->
+  <!-- Bottom Exception Note Bar (Time Tab Only) -->
   <form id="note-form" class="note-dock">
     <div class="note-dock-inner">
       <strong style="font-size:13px; white-space:nowrap;">예외 변경 메모</strong>
@@ -498,6 +547,7 @@
   <script>
     let state = null;
     let selectedDate = null;
+    let activeTab = 'time';
     let dailyFilter = 'all';
     let showSchool = false;
 
@@ -509,7 +559,7 @@
       el.textContent = msg;
       el.classList.add('show');
       clearTimeout(window._toastTimer);
-      window._toastTimer = setTimeout(() => el.classList.remove('show'), 2100);
+      window._toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
     }
 
     async function copyPrompt(text, label) {
@@ -519,6 +569,15 @@
       } catch {
         prompt('아래 프롬프트를 복사해서 Antigravity 채팅에 붙여넣으세요:', text);
       }
+    }
+
+    function formatKrw(n) {
+      const num = Number(n || 0);
+      const sign = num < 0 ? '-' : '';
+      const abs = Math.abs(num);
+      if (abs >= 100000000) return `${sign}${(abs / 100000000).toFixed(2).replace(/\.00$/, '')}억`;
+      if (abs >= 10000) return `${sign}${Math.round(abs / 10000).toLocaleString()}만 원`;
+      return `${sign}${abs.toLocaleString()}원`;
     }
 
     function shiftDate(dateStr, delta) {
@@ -535,10 +594,7 @@
     }
 
     function escapeHtml(s) {
-      return String(s || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     function formatInlineMd(s) {
@@ -562,6 +618,15 @@
       render();
     }
 
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      document.getElementById('tab-time').style.display = tab === 'time' ? 'block' : 'none';
+      document.getElementById('tab-wealth').style.display = tab === 'wealth' ? 'block' : 'none';
+      document.getElementById('tab-projects').style.display = tab === 'projects' ? 'block' : 'none';
+      document.getElementById('note-form').style.display = tab === 'time' ? 'block' : 'none';
+    }
+
     function renderBanners() {
       const box = document.getElementById('banners');
       box.innerHTML = '';
@@ -574,10 +639,7 @@
       if (needsApproval || floorBreach) {
         const div = document.createElement('div');
         div.className = 'banner danger';
-        const reasons = [
-          ...(state.daily.autoLog || []),
-          ...(state.weekly.autoLog || [])
-        ];
+        const reasons = [...(state.daily.autoLog || []), ...(state.weekly.autoLog || [])];
         div.innerHTML = `
           <div>
             <div class="banner-title">🚨 핵심 목표(P1) 용량 충돌 또는 P0 하한선 경고 — 결재가 필요합니다</div>
@@ -614,12 +676,7 @@
       if (logs.length && !needsApproval) {
         const div = document.createElement('div');
         div.className = 'banner info';
-        div.innerHTML = `
-          <div>
-            <div class="banner-title">🔄 06:00 자동 조정 내역 (P2–PN 투명 고지)</div>
-            <ul>${logs.map(l => `<li>${formatInlineMd(l)}</li>`).join('')}</ul>
-          </div>
-        `;
+        div.innerHTML = `<div><div class="banner-title">🔄 06:00 자동 조정 내역 (P2–PN 투명 고지)</div><ul>${logs.map(l => `<li>${formatInlineMd(l)}</li>`).join('')}</ul></div>`;
         box.appendChild(div);
       }
     }
@@ -631,7 +688,7 @@
       if (!showSchool) return;
 
       const { events, rules } = state.scheduleRef || { events: [], rules: [] };
-      const html = `
+      document.getElementById('school-content').innerHTML = `
         ${rules.length ? `<ul style="margin:0 0 10px; padding-left:18px; font-size:13px; color:var(--muted);">${rules.map(r => `<li>${formatInlineMd(r)}</li>`).join('')}</ul>` : ''}
         ${events.length ? `
           <table class="mini-table">
@@ -640,7 +697,6 @@
           </table>
         ` : '<div class="empty">등록된 다가오는 고정 일정이 없습니다.</div>'}
       `;
-      document.getElementById('school-content').innerHTML = html;
     }
 
     function renderDaily() {
@@ -694,9 +750,7 @@
                 });
                 render();
                 showToast(nextStatus === 'done' ? '완료 체크됨' : nextStatus === 'skipped' ? '건너뜀 표시됨' : '대기 상태로 복원됨');
-              } catch (err) {
-                showToast(`오류: ${err.message}`);
-              }
+              } catch (err) { showToast(`오류: ${err.message}`); }
             };
           });
           list.appendChild(card);
@@ -748,7 +802,7 @@
 
       titleEl.textContent = `${state.weekId} 남은 할 일 (미리 완료 체크)`;
       if (!state.weekly.tasks.length) {
-        list.innerHTML = '<div class="empty">등록된 주간 체크 항목이 없습니다. 아래에서 추가하거나 다음 주간 계획에서 자동 생성됩니다.</div>';
+        list.innerHTML = '<div class="empty">등록된 주간 체크 항목이 없습니다.</div>';
       } else {
         list.innerHTML = '';
         state.weekly.tasks.forEach(t => {
@@ -782,32 +836,229 @@
       }
 
       tbody.innerHTML = (state.weekly.daySchedule || []).map(d => `
-        <tr>
-          <td style="white-space:nowrap;"><strong>${escapeHtml(d.day)}</strong></td>
-          <td>${formatInlineMd(d.theme)}</td>
-          <td>${formatInlineMd(d.blocks)}</td>
-        </tr>
+        <tr><td style="white-space:nowrap;"><strong>${escapeHtml(d.day)}</strong></td><td>${formatInlineMd(d.theme)}</td><td>${formatInlineMd(d.blocks)}</td></tr>
       `).join('');
+    }
+
+    function renderWealth() {
+      const w = state.wealth;
+      const draftBox = document.getElementById('wealth-draft-banner');
+      draftBox.innerHTML = '';
+      if (w.exists && w.latestMonthlyDraft) {
+        const d = document.createElement('div');
+        d.className = 'banner info';
+        d.innerHTML = `
+          <div>
+            <div class="banner-title">📋 최신 월간 결재서 초안 도착 (${escapeHtml(w.latestMonthlyDraft)})</div>
+            <div style="font-size:13px;">매월 28일 자동 생성된 다음 달 시간·재산 결재 초안이 <code>council/</code>에 준비되어 있습니다.</div>
+          </div>
+          <button class="primary" id="btn-review-draft">초안 검토·결재 프롬프트 복사</button>
+        `;
+        draftBox.appendChild(d);
+        d.querySelector('#btn-review-draft').onclick = () => copyPrompt(
+          `council/${w.latestMonthlyDraft}에 저장된 월간 결재서 초안을 보여주고, 시간·돈 프로젝트 3안을 같이 검토해서 확정하자.`,
+          '월간 초안 검토 프롬프트'
+        );
+      }
+
+      const kpis = document.getElementById('wealth-kpis');
+      if (!w.exists) {
+        kpis.innerHTML = '<div class="empty">profile/wealth.md 파일이 아직 없습니다.</div>';
+        return;
+      }
+
+      const netClass = w.monthly_net_krw >= 0 ? 'pos' : 'neg';
+      const netPrefix = w.monthly_net_krw > 0 ? '+' : '';
+      kpis.innerHTML = `
+        <div class="kpi-card"><div class="kpi-label">즉시 가용 현금</div><div class="kpi-val">${formatKrw(w.liquid_cash_krw)}</div></div>
+        <div class="kpi-card"><div class="kpi-label">월 예상 수입</div><div class="kpi-val pos">${formatKrw(w.monthly_income_krw)}</div></div>
+        <div class="kpi-card"><div class="kpi-label">월 예상 지출</div><div class="kpi-val">${formatKrw(w.monthly_expense_krw)}</div></div>
+        <div class="kpi-card"><div class="kpi-label">월 순현금흐름</div><div class="kpi-val ${netClass}">${netPrefix}${formatKrw(w.monthly_net_krw)}</div></div>
+        <div class="kpi-card"><div class="kpi-label">투자·운영 자본 풀</div><div class="kpi-val">${formatKrw(w.investable_pool_krw)}</div></div>
+      `;
+
+      document.getElementById('w-liquid').value = w.liquid_cash_krw;
+      document.getElementById('w-investable').value = w.investable_pool_krw;
+      document.getElementById('w-income').value = w.monthly_income_krw;
+      document.getElementById('w-expense').value = w.monthly_expense_krw;
+      document.getElementById('w-debt').value = w.total_debt_krw;
+
+      const tbody = document.getElementById('wealth-alloc-body');
+      const t = state.portfolioTotals;
+      tbody.innerHTML = state.projects.map(p => `
+        <tr>
+          <td><strong>${escapeHtml(p.title)}</strong></td>
+          <td><span class="tag ${p.status === 'active' ? 'active-st' : 'queued-st'}">${escapeHtml(p.status)}</span></td>
+          <td>${formatKrw(p.monthly_budget_krw)}</td>
+          <td>${formatKrw(p.capital_pool_krw)}</td>
+          <td style="color:var(--success); font-weight:600;">${formatKrw(p.target_monthly_income_krw)}</td>
+        </tr>
+      `).join('') + `
+        <tr style="background:var(--surface-2); font-weight:700;">
+          <td colspan="2">합계 (${state.projects.length}개 프로젝트)</td>
+          <td>${formatKrw(t.totalMonthlyBudgetKrw)}</td>
+          <td>${formatKrw(t.totalCapitalPoolKrw)}</td>
+          <td style="color:var(--success);">${formatKrw(t.totalTargetIncomeKrw)}</td>
+        </tr>
+      `;
+
+      document.getElementById('wealth-goals-list').innerHTML = (w.goals || []).map(g => `<li>${formatInlineMd(g)}</li>`).join('') || '<li class="empty">등록된 재산 목표가 없습니다.</li>';
+    }
+
+    function renderProjects() {
+      const t = state.portfolioTotals;
+      document.getElementById('projects-totals').innerHTML = `
+        <span class="pill primary">활성 ${t.activeCount} / 전체 ${state.projects.length}</span>
+        <span class="pill">⏱ 총 주간 할당: ${t.totalWeeklyHours}h</span>
+        <span class="pill">💳 총 월 예산: ${formatKrw(t.totalMonthlyBudgetKrw)}</span>
+        <span class="pill">🏦 총 배정 자본: ${formatKrw(t.totalCapitalPoolKrw)}</span>
+        <span class="pill success">📈 총 월 목표수익: ${formatKrw(t.totalTargetIncomeKrw)}</span>
+      `;
+
+      const grid = document.getElementById('projects-grid');
+      if (!state.projects.length) {
+        grid.innerHTML = '<div class="empty">projects/ 폴더에 등록된 프로젝트가 없습니다.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      state.projects.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'project-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:4px;">
+                <span class="tag ${p.status === 'active' ? 'active-st' : 'queued-st'}">${escapeHtml(p.status)}</span>
+                <span class="tag">${escapeHtml(p.domain)}</span>
+                <span class="tag">${escapeHtml(p.slug)}</span>
+              </div>
+              <h3 style="margin:0; font-size:15px;">${escapeHtml(p.title)}</h3>
+            </div>
+            <button class="icon-btn" data-act="work">/project-manage 복사</button>
+          </div>
+          ${p.vision.length ? `<div style="font-size:12.5px; color:var(--muted);">${formatInlineMd(p.vision[0])}</div>` : ''}
+          <div class="quota-bar">
+            <span>⏱ 주 ${p.weekly_quota_hours}h</span>
+            <span>💳 월예산 ${formatKrw(p.monthly_budget_krw)}</span>
+            <span>🏦 자본금 ${formatKrw(p.capital_pool_krw)}</span>
+            <span style="color:var(--success);">📈 목표수익 ${formatKrw(p.target_monthly_income_krw)}/월</span>
+          </div>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px;">Next Actions (SSOT · 체크 즉시 저장)</div>
+            <div class="block-list" data-actions="${escapeHtml(p.slug)}"></div>
+          </div>
+          <details>
+            <summary>시간 · 자본 할당 수정 및 마일스톤 (${p.milestones.length})</summary>
+            <form class="form-grid" style="margin-top:8px;" data-quota-form="${escapeHtml(p.slug)}">
+              <div class="field">
+                <label>상태</label>
+                <select name="status">
+                  <option value="active" ${p.status === 'active' ? 'selected' : ''}>active</option>
+                  <option value="queued" ${p.status === 'queued' ? 'selected' : ''}>queued</option>
+                  <option value="paused" ${p.status === 'paused' ? 'selected' : ''}>paused</option>
+                  <option value="completed" ${p.status === 'completed' ? 'selected' : ''}>completed</option>
+                </select>
+              </div>
+              <div class="field"><label>주간 시간 (h)</label><input name="weekly_quota_hours" type="number" step="0.5" min="0" value="${p.weekly_quota_hours}" /></div>
+              <div class="field"><label>월 예산 (원)</label><input name="monthly_budget_krw" type="number" step="10000" min="0" value="${p.monthly_budget_krw}" /></div>
+              <div class="field"><label>배정 자본금 (원)</label><input name="capital_pool_krw" type="number" step="10000" min="0" value="${p.capital_pool_krw}" /></div>
+              <div class="field full"><label>월 목표 수익 (원)</label><input name="target_monthly_income_krw" type="number" step="10000" min="0" value="${p.target_monthly_income_krw}" /></div>
+              <div class="field full" style="flex-direction:row; justify-content:flex-end;"><button type="submit" class="primary">할당 저장</button></div>
+            </form>
+            ${p.milestones.length ? `<ul style="margin:10px 0 0; padding-left:18px; font-size:12.5px; color:var(--muted);">${p.milestones.map(m => `<li>${m.status === 'done' ? '✅' : '⬜'} ${formatInlineMd(m.text)}</li>`).join('')}</ul>` : ''}
+          </details>
+        `;
+
+        card.querySelector('[data-act="work"]').onclick = () => copyPrompt(
+          `/project-manage projects/${p.slug}/index.md 기준으로 현재 진행 상황 점검하고 다음 액션·산출물 진행하자.`,
+          `${p.slug} 작업 프롬프트`
+        );
+
+        const actionsBox = card.querySelector(`[data-actions="${p.slug}"]`);
+        if (!p.nextActions.length) {
+          actionsBox.innerHTML = '<div style="font-size:12px; color:var(--muted);">등록된 Next Actions 없음</div>';
+        } else {
+          p.nextActions.forEach(a => {
+            const row = document.createElement('div');
+            row.className = `weekly-item ${a.status}`;
+            row.innerHTML = `
+              <div class="weekly-text" style="font-size:13px; flex:1;">${formatInlineMd(a.text)}</div>
+              <button class="icon-btn ${a.status === 'done' ? 'done-active' : ''}">${a.status === 'done' ? '완료 ✓' : '체크'}</button>
+            `;
+            row.querySelector('button').onclick = async () => {
+              const nextStatus = a.status === 'done' ? 'pending' : 'done';
+              try {
+                state = await api('/api/project/toggle-action', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ slug: p.slug, index: a.index, status: nextStatus, date: state.selectedDate })
+                });
+                render();
+                showToast('프로젝트 Next Action 저장됨');
+              } catch (err) { showToast(`오류: ${err.message}`); }
+            };
+            actionsBox.appendChild(row);
+          });
+        }
+
+        card.querySelector(`[data-quota-form="${p.slug}"]`).onsubmit = async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          try {
+            state = await api('/api/project/update-quotas', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                slug: p.slug,
+                date: state.selectedDate,
+                status: fd.get('status'),
+                weekly_quota_hours: Number(fd.get('weekly_quota_hours')),
+                monthly_budget_krw: Number(fd.get('monthly_budget_krw')),
+                capital_pool_krw: Number(fd.get('capital_pool_krw')),
+                target_monthly_income_krw: Number(fd.get('target_monthly_income_krw'))
+              })
+            });
+            render();
+            showToast(`${p.slug} 시간·자본 할당 저장됨`);
+          } catch (err) { showToast(`오류: ${err.message}`); }
+        };
+
+        grid.appendChild(card);
+      });
     }
 
     function render() {
       document.getElementById('date-badge').textContent = formatKoreanDay(state.selectedDate) + (state.selectedDate === state.today ? ' · 오늘' : '');
-      document.getElementById('week-badge').textContent = state.weekId;
       const pct = state.daily.exists ? state.daily.computedProgress : 0;
       document.getElementById('progress-badge').textContent = `오늘 ${pct}%`;
+
+      const cashBadge = document.getElementById('cash-badge');
+      if (state.wealth && state.wealth.exists) {
+        const net = state.wealth.monthly_net_krw;
+        const sign = net > 0 ? '+' : '';
+        cashBadge.textContent = `💰 가용 ${formatKrw(state.wealth.liquid_cash_krw)} · 월 ${sign}${formatKrw(net)}`;
+        cashBadge.className = `pill clickable ${net < 0 ? 'warning' : 'success'}`;
+      }
 
       renderBanners();
       renderSchoolPanel();
       renderDaily();
       renderWeekly();
+      renderWealth();
+      renderProjects();
     }
 
     // Event bindings
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.onclick = () => switchTab(btn.dataset.tab);
+    });
+    document.getElementById('cash-badge').onclick = () => switchTab('wealth');
     document.getElementById('btn-prev').onclick = () => loadState(shiftDate(selectedDate, -1));
     document.getElementById('btn-next').onclick = () => loadState(shiftDate(selectedDate, 1));
     document.getElementById('btn-today').onclick = () => loadState(state ? state.today : null);
     document.getElementById('btn-refresh').onclick = () => loadState(selectedDate).then(() => showToast('최신 마크다운 다시 읽음'));
-    document.getElementById('btn-school').onclick = () => { showSchool = !showSchool; renderSchoolPanel(); };
+    document.getElementById('btn-school').onclick = () => { showSchool = !showSchool; switchTab('time'); renderSchoolPanel(); };
     document.getElementById('btn-theme').onclick = () => {
       const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
@@ -826,10 +1077,17 @@
       '학교 구글 캘린더(읽기 전용)에서 이번 시험 범위 강의 목록을 불러와서 시험 대비 회독 계획에 참고해줘. (원본 캘린더는 절대 수정하지 말 것)',
       '시험 강의 조회 프롬프트'
     );
-
     document.getElementById('btn-copy-reschedule').onclick = () => copyPrompt(
       `/daily-plan ${state.selectedDate}에 기록한 Quick Notes 예외 변경사항을 지금 바로 반영해서 오늘 시간표를 다시 짜줘.`,
       '즉시 반영 프롬프트'
+    );
+    document.getElementById('btn-copy-wealth-pitch').onclick = () => copyPrompt(
+      '/strategy-review 현재 profile/wealth.md 재산 스냅샷과 가용 시간을 바탕으로, 월간·연간 재산 프로젝트(저축·상환·과외·스타트업·포커·투자·자동매매 등) 3안 포트폴리오 카드와 시간·돈 100% 결재안을 제안해줘.',
+      '재산 프로젝트 3안 제안 프롬프트'
+    );
+    document.getElementById('btn-copy-new-project').onclick = () => copyPrompt(
+      '/project-manage 새 성장 또는 재산 프로젝트(예: 저축·과외·포커·투자·자동매매·스타트업 등)를 projects/ 아래에 추가하자. 시간·예산·목표수익과 운영 규칙을 같이 정리해줘.',
+      '새 프로젝트 추가 프롬프트'
     );
 
     document.getElementById('note-form').onsubmit = async (e) => {
@@ -845,7 +1103,7 @@
         });
         input.value = '';
         render();
-        showToast('예외 변경 메모 저장됨 (다음 06:00 자동 반영)');
+        showToast('예외 변경 메모 저장됨');
       } catch (err) { showToast(`오류: ${err.message}`); }
     };
 
@@ -869,6 +1127,28 @@
         input.value = '';
         render();
         showToast('주간 할 일 추가됨');
+      } catch (err) { showToast(`오류: ${err.message}`); }
+    };
+
+    document.getElementById('wealth-form').onsubmit = async (e) => {
+      e.preventDefault();
+      try {
+        state = await api('/api/wealth/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: state.selectedDate,
+            liquid_cash_krw: Number(document.getElementById('w-liquid').value),
+            investable_pool_krw: Number(document.getElementById('w-investable').value),
+            monthly_income_krw: Number(document.getElementById('w-income').value),
+            monthly_expense_krw: Number(document.getElementById('w-expense').value),
+            total_debt_krw: Number(document.getElementById('w-debt').value),
+            note: document.getElementById('w-note').value
+          })
+        });
+        document.getElementById('w-note').value = '';
+        render();
+        showToast('재산 스냅샷이 profile/wealth.md에 저장됨');
       } catch (err) { showToast(`오류: ${err.message}`); }
     };
 

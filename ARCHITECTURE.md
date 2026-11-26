@@ -7,8 +7,8 @@
 ```mermaid
 flowchart LR
     U["Main Agent<br/>(Life Planner · AGENTS.md)"]
-    AUTO["06:00 Auto-Replan &amp;<br/>Sun 20:30 Weekly Cron"]
-    UI["Local Web Dashboard<br/>(dashboard/ · localhost)"]
+    AUTO["Cron Automations<br/>(06:00 Daily · Sun 20:30 Weekly<br/>· 28th 20:00 Monthly Draft)"]
+    UI["3-Tab Local Dashboard<br/>(dashboard/ · 시간표·돈·프로젝트)"]
 
     subgraph CORE["Core Planning Loop (4 Skills)"]
         direction TB
@@ -50,7 +50,7 @@ flowchart LR
 
     U --> S_STRAT & S_WEEK & S_DAY & S_PROJ
     U --> S_ONB & S_AUD & S_SYNC
-    AUTO ==>|"매일 06:00 / 일 20:30"| S_DAY & S_WEEK
+    AUTO ==>|"06:00 / 일 20:30 / 매월 28일 20:00"| S_DAY & S_WEEK & S_STRAT
 
     S_STRAT ==>|"병렬 소환 (Rebalance: 2인)"| A_GRD & A_GRW
     S_STRAT ==>|"전략 회의 병렬 소환"| A_RAD
@@ -68,7 +68,7 @@ flowchart LR
     S_DAY -.->|"체크·메모 읽기 → 재편성 & 아카이브"| D_PLAN & D_LOGS
     S_DAY & S_WEEK -.->|"강의 숨김 / 시험만 필터"| GCAL
 
-    UI <==>|"체크[x]/[-], 미리완료, 예외메모 직접 동기화"| D_PLAN
+    UI <==>|"체크·메모·재산스냅샷·프로젝트 직접 동기화"| D_PLAN & D_PROF & D_PROJ
     S_ONB -.-> D_PROF
     S_SYNC -.-> REMOTE
 ```

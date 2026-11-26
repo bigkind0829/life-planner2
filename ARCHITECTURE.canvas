@@ -63,11 +63,11 @@
     {
       "id": "node-auto",
       "type": "text",
-      "text": "### 06:00 Auto-Replan\n- 매일 06:00 데일리+주간 롤링 재편성\n- 일 20:30 다음 주 자동 초안\n- `P2–PN` 자동 보류 / `P1`만 결재 배너",
+      "text": "### Cron Automations\n- 매일 06:00 데일리+주간 롤링 재편성\n- 일 20:30 다음 주 자동 초안\n- 매월 28일 20:00 월간 전략·재산 결재 초안",
       "x": 0,
       "y": 320,
       "width": 250,
-      "height": 145,
+      "height": 150,
       "color": "4"
     },
     {
@@ -223,11 +223,11 @@
     {
       "id": "data-projects",
       "type": "text",
-      "text": "### `projects/*/index.md`\n**프로젝트 SSOT 계약 파일**\n- 지주사: `status`, `weekly_quota_hours`\n- `project-lead`: Operating Rules & `Next Actions`",
+      "text": "### `projects/*/index.md`\n**시간·자본 통합 프로젝트 SSOT**\n- 지주사: `weekly_quota_hours` + `monthly_budget_krw` / `capital_pool_krw` / `target_monthly_income_krw`\n- `project-lead`: Operating Rules & `Next Actions`",
       "x": 1205,
       "y": 375,
       "width": 250,
-      "height": 125,
+      "height": 135,
       "color": "3"
     },
     {
