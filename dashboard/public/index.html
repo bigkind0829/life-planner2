@@ -481,6 +481,36 @@
     .skip-link:hover { color: var(--ink); background: var(--tint); }
     .skip-link.active { color: var(--ink); background: var(--tint); font-weight: 600; }
 
+    .tl-edit-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      background: var(--tint);
+      border: 1px solid var(--rule-strong);
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .tl-edit-inline {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--tint);
+      border-radius: 4px;
+    }
+    .chk-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+
     /* Weekly Check-Ahead List */
     .check-list {
       display: flex;
@@ -812,8 +842,22 @@
                 <button type="button" data-filter="all" class="active">전체</button>
                 <button type="button" data-filter="pending">남은 일</button>
                 <button type="button" data-filter="core">핵심</button>
+                <button type="button" id="btn-toggle-add-block" class="btn-quiet" style="margin-left:6px; padding:3px 9px;">일정 추가</button>
               </div>
             </div>
+
+            <form id="add-block-form" class="tl-edit-bar" style="display:none;">
+              <input id="ab-time" type="text" placeholder="14:00–15:30" style="width:106px;" required />
+              <select id="ab-prio" aria-label="우선순위">
+                <option value="P0">P0</option>
+                <option value="P1" selected>P1</option>
+                <option value="P2">P2</option>
+                <option value="P3">P3</option>
+              </select>
+              <input id="ab-task" type="text" placeholder="추가할 일정 내용" style="flex:1; min-width:160px;" required />
+              <label class="chk-inline"><input id="ab-core" type="checkbox" /> 핵심</label>
+              <button type="submit" class="btn-ink">추가</button>
+            </form>
 
             <div id="daily-list" class="timeline"></div>
 
@@ -993,6 +1037,7 @@
     let activeTab = 'time';
     let dailyFilter = 'all';
     let showSchool = false;
+    let editingBlockIndex = null;
 
     const savedTheme = localStorage.getItem('lp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -1202,6 +1247,67 @@
           const isNow = b.status === 'pending' && isCurrentTimeWindow(b.time, isToday);
           const row = document.createElement('div');
           row.className = `tl-row prio-${prioClass} ${b.status}${isNow ? ' is-now' : ''}`;
+
+          if (editingBlockIndex === b.index) {
+            const plainTask = b.task.replace(/^\*\*\[핵심\]\*\*\s*|^\[핵심\]\s*/, '');
+            row.innerHTML = `
+              <form class="tl-edit-inline">
+                <input name="time" type="text" value="${escapeHtml(b.time)}" style="width:104px;" required />
+                <select name="priority">
+                  <option value="P0" ${/^P0/i.test(b.priority) ? 'selected' : ''}>P0</option>
+                  <option value="P1" ${/^P1/i.test(b.priority) ? 'selected' : ''}>P1</option>
+                  <option value="P2" ${/^P2/i.test(b.priority) ? 'selected' : ''}>P2</option>
+                  <option value="P3" ${/^P3/i.test(b.priority) ? 'selected' : ''}>P3</option>
+                </select>
+                <input name="task" type="text" value="${escapeHtml(plainTask)}" style="flex:1; min-width:160px;" required />
+                <label class="chk-inline"><input name="core" type="checkbox" ${b.core ? 'checked' : ''} /> 핵심</label>
+                <button type="submit" class="btn-ink">저장</button>
+                <button type="button" class="btn-quiet" data-act="del" style="color:var(--signal);">삭제</button>
+                <button type="button" class="btn-quiet" data-act="cancel">취소</button>
+              </form>
+            `;
+            const form = row.querySelector('form');
+            form.onsubmit = async (e) => {
+              e.preventDefault();
+              const fd = new FormData(form);
+              try {
+                state = await api('/api/daily/block/edit', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    date: state.selectedDate,
+                    index: b.index,
+                    time: fd.get('time'),
+                    priority: fd.get('priority'),
+                    task: fd.get('task'),
+                    core: fd.get('core') === 'on'
+                  })
+                });
+                editingBlockIndex = null;
+                render();
+                showToast('일정 수정됨');
+              } catch (err) { showToast(err.message); }
+            };
+            row.querySelector('[data-act="del"]').onclick = async () => {
+              try {
+                state = await api('/api/daily/block/delete', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ date: state.selectedDate, index: b.index })
+                });
+                editingBlockIndex = null;
+                render();
+                showToast('일정 삭제됨');
+              } catch (err) { showToast(err.message); }
+            };
+            row.querySelector('[data-act="cancel"]').onclick = () => {
+              editingBlockIndex = null;
+              renderDaily();
+            };
+            list.appendChild(row);
+            return;
+          }
+
           row.innerHTML = `
             <div class="tl-time">${escapeHtml(b.time)}</div>
             <div class="tl-rail" aria-hidden="true"><span class="tl-dot"></span></div>
@@ -1216,9 +1322,14 @@
             <div class="tl-actions">
               <button type="button" class="chk-box ${b.status === 'done' ? 'checked' : ''}" data-act="done" aria-label="완료 표시" title="완료">✓</button>
               <button type="button" class="skip-link ${b.status === 'skipped' ? 'active' : ''}" data-act="skipped">${b.status === 'skipped' ? '건너뜀' : '건너뛰기'}</button>
+              <button type="button" class="skip-link" data-act="edit">수정</button>
             </div>
           `;
-          row.querySelectorAll('button').forEach(btn => {
+          row.querySelector('[data-act="edit"]').onclick = () => {
+            editingBlockIndex = b.index;
+            renderDaily();
+          };
+          row.querySelectorAll('[data-act="done"], [data-act="skipped"]').forEach(btn => {
             btn.onclick = async () => {
               const act = btn.dataset.act;
               const nextStatus = b.status === act ? 'pending' : act;
@@ -1555,13 +1666,45 @@
       localStorage.setItem('lp-theme', next);
     };
 
-    document.querySelectorAll('.seg-filter button').forEach(btn => {
+    document.querySelectorAll('.seg-filter button[data-filter]').forEach(btn => {
       btn.onclick = () => {
         dailyFilter = btn.dataset.filter;
-        document.querySelectorAll('.seg-filter button').forEach(b => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('.seg-filter button[data-filter]').forEach(b => b.classList.toggle('active', b === btn));
         renderDaily();
       };
     });
+
+    document.getElementById('btn-toggle-add-block').onclick = () => {
+      const form = document.getElementById('add-block-form');
+      const open = form.style.display === 'none';
+      form.style.display = open ? 'flex' : 'none';
+      document.getElementById('btn-toggle-add-block').classList.toggle('active', open);
+      if (open) document.getElementById('ab-time').focus();
+    };
+
+    document.getElementById('add-block-form').onsubmit = async (e) => {
+      e.preventDefault();
+      try {
+        state = await api('/api/daily/block/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: state.selectedDate,
+            time: document.getElementById('ab-time').value,
+            priority: document.getElementById('ab-prio').value,
+            task: document.getElementById('ab-task').value,
+            core: document.getElementById('ab-core').checked
+          })
+        });
+        document.getElementById('ab-time').value = '';
+        document.getElementById('ab-task').value = '';
+        document.getElementById('ab-core').checked = false;
+        document.getElementById('add-block-form').style.display = 'none';
+        document.getElementById('btn-toggle-add-block').classList.remove('active');
+        render();
+        showToast('일정 추가됨');
+      } catch (err) { showToast(err.message); }
+    };
 
     document.getElementById('btn-copy-exam-prompt').onclick = () => copyPrompt(
       '학교 구글 캘린더(읽기 전용)에서 이번 시험 범위 강의 목록을 불러와서 시험 대비 회독 계획에 참고해줘. (원본 캘린더는 절대 수정하지 말 것)',

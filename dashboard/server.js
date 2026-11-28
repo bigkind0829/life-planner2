@@ -473,6 +473,98 @@ function toggleDailyBlock(dateStr, blockIndex, targetStatus) {
   fs.writeFileSync(filePath, nextContent, 'utf8');
 }
 
+function sanitizeCell(val) {
+  return String(val || '').trim().replace(/[|\r\n]+/g, ' ');
+}
+
+function parseStartMinutes(timeStr) {
+  const m = String(timeStr || '').match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return 9999;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+
+function recalcDailyProgress(blocks) {
+  const checkable = blocks.filter(b => b.status !== 'skipped').length;
+  const doneCount = blocks.filter(b => b.status === 'done').length;
+  return checkable > 0 ? Math.round((doneCount / checkable) * 100) : 0;
+}
+
+function addDailyBlock(dateStr, time, priority, task, core) {
+  const filePath = dailyFilePath(dateStr);
+  if (!fs.existsSync(filePath)) throw new Error('Daily plan file not found');
+  const cleanTime = sanitizeCell(time);
+  const cleanPrio = sanitizeCell(priority || 'P1');
+  let cleanTask = sanitizeCell(task);
+  if (!cleanTime || !cleanTask) throw new Error('Time and task are required');
+  if (core && !cleanTask.includes('[핵심]')) cleanTask = `**[핵심]** ${cleanTask}`;
+
+  const parsed = parseDailyPlan(dateStr);
+  const content = fs.readFileSync(filePath, 'utf8');
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(/\r?\n/);
+  const newRow = `| ${cleanTime} | ${cleanPrio} | ${cleanTask} | [ ] |`;
+
+  if (parsed.blocks.length > 0) {
+    const newMin = parseStartMinutes(cleanTime);
+    let insertAt = parsed.blocks[parsed.blocks.length - 1].lineIndex + 1;
+    for (const b of parsed.blocks) {
+      if (parseStartMinutes(b.time) > newMin) {
+        insertAt = b.lineIndex;
+        break;
+      }
+    }
+    lines.splice(insertAt, 0, newRow);
+  } else {
+    lines.push('', '| Time | Priority | Task / Block | Status |', '| :--- | :---: | :--- | :---: |', newRow);
+  }
+
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
+  const updated = parseDailyPlan(dateStr);
+  const refreshed = fs.readFileSync(filePath, 'utf8');
+  fs.writeFileSync(filePath, updateFrontmatterFields(refreshed, { progress: recalcDailyProgress(updated.blocks), updated_at: getSeoulToday() }), 'utf8');
+}
+
+function editDailyBlock(dateStr, blockIndex, time, priority, task, core) {
+  const filePath = dailyFilePath(dateStr);
+  if (!fs.existsSync(filePath)) throw new Error('Daily plan file not found');
+  const parsed = parseDailyPlan(dateStr);
+  const block = parsed.blocks[blockIndex];
+  if (!block) throw new Error('Block index out of range');
+
+  const cleanTime = sanitizeCell(time || block.time);
+  const cleanPrio = sanitizeCell(priority || block.priority);
+  let cleanTask = sanitizeCell(task || block.task).replace(/^\*\*\[핵심\]\*\*\s*|^\[핵심\]\s*/, '');
+  if (!cleanTime || !cleanTask) throw new Error('Time and task are required');
+  if (core) cleanTask = `**[핵심]** ${cleanTask}`;
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(/\r?\n/);
+  const mark = block.status === 'done' ? '[x]' : block.status === 'skipped' ? '[-]' : '[ ]';
+  lines[block.lineIndex] = `| ${cleanTime} | ${cleanPrio} | ${cleanTask} | ${mark} |`;
+
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), { updated_at: getSeoulToday() }), 'utf8');
+}
+
+function deleteDailyBlock(dateStr, blockIndex) {
+  const filePath = dailyFilePath(dateStr);
+  if (!fs.existsSync(filePath)) throw new Error('Daily plan file not found');
+  const parsed = parseDailyPlan(dateStr);
+  const block = parsed.blocks[blockIndex];
+  if (!block) throw new Error('Block index out of range');
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(/\r?\n/);
+  lines.splice(block.lineIndex, 1);
+  const remaining = parsed.blocks.filter((_, idx) => idx !== blockIndex);
+
+  fs.writeFileSync(filePath, updateFrontmatterFields(lines.join(eol), {
+    progress: recalcDailyProgress(remaining),
+    updated_at: getSeoulToday()
+  }), 'utf8');
+}
+
 function toggleWeeklyTask(weekId, taskIndex, targetStatus) {
   const filePath = weeklyFilePath(weekId);
   if (!fs.existsSync(filePath)) throw new Error('Weekly plan file not found');
@@ -728,6 +820,27 @@ const server = http.createServer(async (req, res) => {
       if (!isValidDate(body.date)) return sendJson(res, 400, { error: 'Invalid date' });
       if (!['pending', 'done', 'skipped'].includes(body.status)) return sendJson(res, 400, { error: 'Invalid status' });
       toggleDailyBlock(body.date, Number(body.index), body.status);
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/daily/block/add') {
+      const body = await readJsonBody(req);
+      if (!isValidDate(body.date)) return sendJson(res, 400, { error: 'Invalid date' });
+      addDailyBlock(body.date, body.time, body.priority, body.task, Boolean(body.core));
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/daily/block/edit') {
+      const body = await readJsonBody(req);
+      if (!isValidDate(body.date)) return sendJson(res, 400, { error: 'Invalid date' });
+      editDailyBlock(body.date, Number(body.index), body.time, body.priority, body.task, Boolean(body.core));
+      return sendJson(res, 200, buildState(body.date));
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/daily/block/delete') {
+      const body = await readJsonBody(req);
+      if (!isValidDate(body.date)) return sendJson(res, 400, { error: 'Invalid date' });
+      deleteDailyBlock(body.date, Number(body.index));
       return sendJson(res, 200, buildState(body.date));
     }
 

@@ -1,84 +1,52 @@
-# Life Planner — Workspace Operating Charter
+# Life Planner — Operating Charter
 
-This workspace is an Antigravity-native, multi-agent **Life Planner** designed around a lean **4-Agent / 7-Skill + Local Dashboard** architecture with strict privacy boundaries. Follow these rules on every planning, project, audit, and sync interaction.
+Antigravity-native **4-Agent / 7-Skill + Local Dashboard (`dashboard/`)** Life Planner. Visual topology: [ARCHITECTURE.md](ARCHITECTURE.md), [ARCHITECTURE.canvas](ARCHITECTURE.canvas).
 
-## 1. Architecture Overview
+## 1. Architecture (Dual-Resource Holding Company)
 
-Visual references: [ARCHITECTURE.md](ARCHITECTURE.md) (Mermaid) and [ARCHITECTURE.canvas](ARCHITECTURE.canvas) (Obsidian). Local check-off UI: `dashboard/`.
+**Time** (`profile/schedule-constraints.md` + `gcalendar`) and **Money/Capital** (`profile/wealth.md`) are two symmetric `≤ 100%` Zero-Sum resource pools allocated across P0 floors, plans, and projects (`projects/*/index.md`).
 
-### Four Specialized Subagents (`.agents/agents/`, all `model: flash`)
-**Time** (`profile/schedule-constraints.md` + Google Calendar) and **Money/Capital** (`profile/wealth.md`) are the Holding Company's two symmetric scarce resource pools allocated across P0 floors, plans, and projects (`projects/*/index.md`).
+### Subagents (`.agents/agents/`, all `model: flash`)
+| Agent | Role | Owned Inputs |
+| :--- | :--- | :--- |
+| `guardian` | **Defense & Floors**: Values, health/sleep, relationships/rest (P0 veto warnings) | `profile/north-star.md`, `vitality.md`, `connection-joy.md` |
+| `growth` | **Offense & Dual-Resource Portfolio**: Career/study mastery, wealth/capital (income, savings, investing, trading, startups), project ranking | `profile/mastery.md`, `wealth.md` + `projects/*/index.md` summary |
+| `world-radar` | **External Signal**: Targeted `search_web` on 3–5 topics → plan-impacting opportunities/risks | `profile/world-radar.md` + `search_web` |
+| `project-lead` | **Reusable Subsidiary Manager**: Playbook-driven execution for any single growth or wealth project | Assigned `projects/<slug>/` only (`index.md` SSOT) |
 
-| Layer | Subagent | Role & Owned Scope | Local Inputs |
-| :--- | :--- | :--- | :--- |
-| **Strategic Council (3-Axis)** | `guardian` | **Defense & Floors**: Values, health/sleep/burnout floor, relationships & rest (issues P0 floor vetoes) | `profile/north-star.md`, `vitality.md`, `connection-joy.md` |
-| **Strategic Council (3-Axis)** | `growth` | **Offense & Dual-Resource Portfolio**: Career/study mastery, wealth/capital portfolio (income, savings, investing, trading, startups), project ranking | `profile/mastery.md`, `wealth.md` + `projects/*/index.md` Time & Money summary |
-| **Strategic Council (3-Axis)** | `world-radar` | **External Signal**: Targeted web search on 3–5 focus topics → plan-relevant opportunities & risks | `profile/world-radar.md` + `search_web` |
-| **Subsidiary Executor (1)** | `project-lead` | **Reusable Project Manager**: Playbook-driven execution for any single growth or wealth project under `projects/<slug>/` | Target `projects/<slug>/` only (`index.md` Time & Money SSOT) |
+- **Mediation**: `guardian` warns on P0 floors; `growth` pushes outcomes. **Main Agent mediates** via `profile/north-star.md` and presents unresolved trade-offs as 2–3 scenarios for user approval.
+- **Zero Wrapper Overhead**: Tactical planning, onboarding, audits, and GitHub sync run directly in the Main Agent (**0 subagent calls**).
 
-- **Fair Mediation Rule**: `guardian` defends P0 floors and flags violations, while `growth` pushes high-leverage outcomes. **The Main Agent mediates conflicts between them** using `profile/north-star.md` charter rules and presents unresolved trade-offs as 2–3 concrete scenarios for user approval.
-- **No Wrapper Agents**: Tactical planning (`/weekly-plan`, `/daily-plan`), system audits (`/system-audit`), onboarding (`/onboard-life`), and GitHub sync (`/sync-github`) run directly in the Main Agent without unnecessary wrapper subagents.
+### Skills & Routing (`.agents/skills/`)
+| Group | Skill | Trigger / Responsibility | Calls |
+| :--- | :--- | :--- | :---: |
+| **Core** | `/strategy-review` | Yearly (Annual), Quarterly (QBR ROI/Kill), Monthly (MBR Plan-vs-Actual/KPT), 28th 20:00 auto-draft (`council/` only), and **Rebalance Mode** | 3 (Rebalance: 2) |
+| **Core** | `/weekly-plan` | Sun 20:30 auto-draft + daily rolling sync; reads active Monthly plan, `Next Actions` of funded `projects/*/index.md`, `gcalendar` | 0 |
+| **Core** | `/daily-plan` | 06:00 auto-replan (or catch-up) & mid-day exceptions; ingests dashboard checkmarks `[x]`/`[-]`, check-ahead weekly `[x]`, `Quick Notes`, `gcalendar` → archives `logs/`, writes daily + rolls weekly | 0 |
+| **Core** | `/project-manage` | Plan/execute deliverables or spin up any growth/wealth project under `projects/<slug>/` | 1 (`project-lead`) |
+| **Ops** | `/onboard-life` | Stage 1/2 setup & enrichment of `profile/` (7 files) | 0 |
+| **Ops** | `/system-audit` | On-demand audit of token weight, SSOT, schema/privacy, and `ARCHITECTURE.*` sync (never auto-run) | 0 |
+| **Ops** | `/sync-github` | Privacy-safe commit & push of system files only | 0 |
 
-### Seven Skills in Two Clear Groups (`.agents/skills/`)
+## 2. Core Operating Rules
 
-**Core Planning Loop (4 Skills)**
-- **`/strategy-review`** *(Strategic + 28th Auto-Draft + Rebalance — User Approval Required)*: Yearly / Quarterly / Monthly reviews summon `guardian`, `growth`, and `world-radar` in parallel (`invoke_subagent`) to produce a **4-Part Executive Approval Sheet** (`≤ 100%` Time & Money Zero-Sum Cap, proactively pitching mastery + wealth/capital projects) and archive decisions in `council/`. Also runs a read-only **28th 20:00 Monthly Auto-Draft** saved to `council/` for user sign-off, and handles **Rebalance Mode** (`guardian` + `growth`).
-- **`/weekly-plan`** *(Tactical — Auto-Generated, 0 Subagent Calls)*: Auto-drafts next week every Sunday 20:30 and rolls forward daily at 06:00 as tasks complete early or carry over. Reads only active Monthly plan, `profile/schedule-constraints.md`, `profile/vitality.md`, active `projects/*/index.md` (`Next Actions` & `Milestones`), Google Calendar (personal + exams only), and recent `logs/`.
-- **`/daily-plan`** *(Tactical — Auto-Generated at 06:00, 0 Subagent Calls)*: Automatically reads yesterday's dashboard checkmarks (`[x]`/`[-]`), ahead-of-schedule weekly checkmarks, exception notes (`## Quick Notes / Ad-Hoc Changes`), and Google Calendar to archive `logs/YYYY-MM-DD-checkin.md`, build today's timetable (`≤ 100%` + ~20% buffer), and roll forward the active weekly plan. No mandatory evening check-in conversation — user only chats/writes notes for ad-hoc exceptions or mid-day reschedules.
-- **`/project-manage`** *(Holding–Subsidiary)*: Invokes `project-lead` with a target `projects/<slug>/index.md` playbook. Holding Company sets `status` & `weekly_quota_hours`; `project-lead` publishes 1–3 concrete `Next Actions` back into `projects/<slug>/index.md` (**Single Source of Truth**).
+1. **Symmetric Zero-Sum Cap (`≤ 100%`) & No Global Mode Switches**: Lock **P0** (date-bounded fixed commitments + survival/dignity floors + ~20% buffer + essential living/debt) first, then allocate `P1 → PN` strictly within `100%` Time & Money. Never use global switches like `exam` mode — use date-bounded fixed schedules and `weekly_quota_hours: 0` (`queued`/`paused`).
+2. **Auto-Deferral vs. P1 Approval Boundary**:
+   - Overflow on **`P2–PN`**: auto-defer bottom-up to stay `≤ 100%` and log 2–3 transparent lines in `## Auto-Adjustment Log`.
+   - Shortfall on **`P1` (`[핵심]`)**: **NEVER silently drop `P1`**. Schedule the safest `P0 + P1` subset, set `needs_approval: true`, and surface an approval banner asking what to defer/drop.
+3. **Escalation Thresholds → `/strategy-review` (Rebalance Mode)**: Escalate ONLY when `needs_approval: true`, `consecutive_miss_weeks >= 2`, `floors_ok: false`, or the user requests changing Monthly/Quarterly/Yearly goals.
+4. **Read-Only School Calendar**: Never delete/modify external school calendars. Hide routine lectures by default (show personal events + exams/assessments only); read lectures read-only only when preparing exam study plans.
+5. **Graceful Absence Recovery**: Never scold missed days/checkmarks; reset cleanly to today and triage only still-relevant items.
+6. **Uniform Council Contract**: Every council subagent returns 4 sections: `Current State & Floor/Watchlist`, `Recommendations (1–3)`, `Conflicts & Risks/Floor Warnings`, `Indicators (1–2)`.
+7. **4-Part Approval Sheet & 3-Option Pitch**: Strategic reviews present **(1) 지난 실적**, **(2) 우선순위 조정 (`P0`+`P1~PN`)**, **(3) 다음 계획 & 종합 3안 제안**, **(4) 시간·돈 결재 (`≤ 100%`)**. Proactive pitches use 3 options (`A: 안정·현금흐름`, `B: 자본증식·시스템`, `C: 비대칭·실험`) fitting `≤ 100%` (tactical skills never pitch — only 1-line `/project-manage` notice).
+8. **SSOT & Schema Integrity**:
+   - `projects/<slug>/index.md`: sole SSOT for `status`, `weekly_quota_hours`, `monthly_budget_krw`, `capital_pool_krw`, `target_monthly_income_krw`, `## Operating Rules & Constraints`, milestones, and `## Next Actions`.
+   - `profile/wealth.md`: sole SSOT for YAML financial snapshot + `## Monthly Snapshot History`.
+   - `plans/YYYY/daily/` & `weekly/`: sole SSOT shared directly by Antigravity, `dashboard/`, and Obsidian (valid YAML frontmatter + ISO filenames).
+   - Keep [ARCHITECTURE.md](ARCHITECTURE.md) and [ARCHITECTURE.canvas](ARCHITECTURE.canvas) synced whenever `.agents/` or `dashboard/` changes.
 
-**System Ops (3 Skills)**
-- **`/onboard-life`**: Two-stage progressive setup/enrichment of the 7 files in `profile/`.
-- **`/system-audit`**: On-demand self-audit by the Main Agent (token efficiency, workflow friction, schema/privacy integrity, architecture doc sync, prioritized upgrades). Never auto-invoked during routine planning.
-- **`/sync-github`**: Privacy-safe Git audit, commit, and push of system files only.
+## 3. Privacy & GitHub Auto-Backup Guardrail
 
-## 2. Routing Rules
-
-| User Intent | Skill to Run |
-| :--- | :--- |
-| Yearly/quarterly/monthly planning, major life review, `P1` shortfall approval, chronic slippage, or floor breach | `/strategy-review` *(Full or Rebalance Mode)* |
-| Weekly review, next week's plan, or manual weekly rolling refresh | `/weekly-plan` |
-| Catch-up morning timetable, mid-day reschedule, or ad-hoc schedule exception | `/daily-plan` |
-| Plan, work on, or spin up a subsidiary project (`projects/<slug>/`) | `/project-manage` |
-| First-time setup or enriching a domain file in `profile/` | `/onboard-life` |
-| Audit token waste, workflow friction, or propose/apply system upgrades | `/system-audit` |
-| Commit and push system updates to GitHub safely | `/sync-github` |
-
-## 3. Core Behavioral Rules
-
-1. **Priority-Driven Zero-Sum Allocation (Hard 100% Cap — No Global Mode Switches)**:
-   - Lock **P0** (date-bounded fixed obligations + survival/dignity floors + ~20% buffer) first, then allocate **P1 → P2 → ... → PN** strictly in priority order within **100% of available time and money**.
-   - Do **NOT** maintain separate global switches like `exam` mode — high-intensity sprints or pauses are controlled uniformly through date-bounded fixed commitments in `profile/schedule-constraints.md` and `weekly_quota_hours: 0` (`queued`/`paused`) approved in `/strategy-review`.
-2. **Auto-Deferral vs. P1 Approval Boundary (Autonomous Daily/Weekly Replanning)**:
-   - When carry-overs exceed 100% capacity during daily/weekly auto-replanning:
-     - **`P2–PN` (Lower Priorities)**: Automatically defer bottom-up to stay `≤ 100%`, and record a concise 2–3 line summary in `## Auto-Adjustment Log`.
-     - **`P1` (`[핵심]` Core Targets)**: **NEVER silently drop or abandon `P1`.** Build the safest `P0 + P1` schedule possible, set `needs_approval: true` in YAML frontmatter, and surface a clear approval banner in `## Auto-Adjustment Log` asking the user what to defer or drop.
-3. **Threshold-Based Escalation**: Absorb normal daily/weekly noise inside `/daily-plan` and `/weekly-plan`. Escalate to `/strategy-review` (**Rebalance Mode**) ONLY when:
-   - `P1` core targets physically cannot fit within the week (`needs_approval: true`), OR
-   - Core weekly targets miss for **2 consecutive weeks** (`consecutive_miss_weeks >= 2`), OR
-   - A P0 floor is breached (`floors_ok: false`), OR
-   - The user explicitly requests revising Monthly, Quarterly, or Yearly goals.
-4. **Calendar Layer Preservation (Read-Only School Calendar)**: Never delete events from external/school calendars. Hide routine lectures from daily/weekly timetables by default (showing personal events + exams/assessments only), and read lecture schedules read-only only when preparing exam study plans or toggling reference view.
-5. **Graceful Absence Recovery**: If the user skips checking boxes for days or weeks, never scold or lecture. Reset cleanly to today, triage only still-relevant items, and resume forward momentum.
-6. **Uniform Council Opinion Contract**: Every strategic council subagent (`guardian`, `growth`, `world-radar`) returns:
-   - `Current State & Floor / Watchlist`
-   - `Recommendations (1–3)`
-   - `Conflicts & Risks / Floor Warnings`
-   - `Indicators (1–2)`
-7. **Single Source of Truth (SSOT) & Schema Integrity**:
-   - `projects/<slug>/index.md` is the **sole SSOT** for project status, Time quota (`weekly_quota_hours`), Money/Capital quotas (`monthly_budget_krw`, `capital_pool_krw`, `target_monthly_income_krw`), operating rules (`## Operating Rules & Constraints`), milestones, and `## Next Actions`.
-   - `profile/wealth.md` YAML frontmatter is the **sole SSOT** for the financial snapshot (`liquid_cash_krw`, `monthly_income_krw`, `monthly_expense_krw`, `total_debt_krw`, `investable_pool_krw`) shared directly by Antigravity and `dashboard/`.
-   - `plans/YYYY/daily/YYYY-MM-DD.md` and `plans/YYYY/weekly/YYYY-Www.md` are the **sole SSOT** shared directly by Antigravity, `dashboard/`, and Obsidian (no duplicate database).
-   - Every file in `plans/YYYY/` MUST start with valid YAML frontmatter matching `templates/plans/` and use ASCII/ISO filenames (`YYYY-MM-DD`, `YYYY-Www`, `YYYY-MM`, `YYYY-Q#`).
-8. **4-Part Executive Approval & Proactive 3-Option Pitch**:
-   - Strategic `/strategy-review` produces a 4-Part Approval Sheet: **(1) 지난 실적**, **(2) 우선순위 조정 (`P0` + `P1~PN`)**, **(3) 다음 계획 & 신상품 3안 제안**, **(4) 시간·돈 결재 (`≤ 100%` Zero-Sum)**.
-   - Every proactive pitch uses a **3-Option Portfolio Card** (`A: 안전·확장형`, `B: 수익·신상품형`, `C: 실험·바이럴형`) with 5 fixed fields (`핵심 목표`, `예상 기간`, `주간 투입시간`, `기대 성과`, `트레이드오프`) strictly fitting the `≤ 100%` cap (skip new launches whenever remaining post-P1 capacity is `0h`).
-   - Tactical Isolation: `/weekly-plan` and `/daily-plan` NEVER run full pitches; if a milestone completion is spotted, show a 1-line prompt to run `/project-manage`.
-9. **Architecture Visual Sync**: Whenever `.agents/` agents, skills, or major system components (`dashboard/`) are added, removed, or re-wired, update [ARCHITECTURE.md](ARCHITECTURE.md) and [ARCHITECTURE.canvas](ARCHITECTURE.canvas) in the same change.
-
-## 4. Privacy & GitHub Sync Guardrail
-
-- Personal data directories (`profile/`, `plans/`, `logs/`, `council/`, `projects/`, `.scratch/`) are excluded in `.gitignore` and MUST NEVER be staged, committed, or pushed to a remote repository unless the user explicitly overrides this policy on a verified private repo.
-- System files MUST remain 100% generic (never hardcode personal project names or private details inside `.agents/` or `dashboard/`).
-- Only system files (`.agents/`, `AGENTS.md`, `README.md`, `ARCHITECTURE.md`, `ARCHITECTURE.canvas`, `templates/`, `integrations/`, `dashboard/`, `.gitignore`) are eligible for `/sync-github`.
-- **Auto-Backup Policy (User-Authorized)**: Whenever system files are created or updated, automatically run the privacy audit (`git status`, verify `.gitignore`, check `git diff --cached --name-only` has zero personal paths) and commit + `git push` to `origin` without extra confirmation. If ANY forbidden personal path appears, STOP immediately and warn the user.
+- **Never stage, commit, or push** `profile/`, `plans/`, `logs/`, `council/`, `projects/`, `.scratch/`, `.env`, or personal details hardcoded inside system files.
+- **Eligible system files only**: `.agents/`, `AGENTS.md`, `README.md`, `ARCHITECTURE.md`, `ARCHITECTURE.canvas`, `templates/`, `integrations/`, `dashboard/`, `.gitignore`.
+- **Auto-Backup Policy (User-Authorized)**: Whenever system files change, run privacy audit (`git status`, verify `.gitignore` & `git diff --cached --name-only` contain zero forbidden paths), then commit and `git push` to `origin` automatically. If ANY personal path appears, STOP immediately and warn the user.
